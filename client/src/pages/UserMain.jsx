@@ -1,6 +1,6 @@
 import { useCallback, useContext, useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { ArrowRight, CalendarDays, MapPin, Stethoscope } from 'lucide-react'
+import { ArrowRight, CalendarDays, GraduationCap } from 'lucide-react'
 import { Brand } from '../components/AuthPage.jsx'
 import { UserDataContext } from '../context/UserDataContext.js'
 
@@ -59,20 +59,20 @@ export default function UserMain() {
   const auth = useContext(UserDataContext)
   const { user, logout, isLoading } = auth
   const navigate = useNavigate()
-  const [doctors, setDoctors] = useState([])
+  const [mentors, setMentors] = useState([])
   const [appointments, setAppointments] = useState([])
-  const [isLoadingDoctors, setIsLoadingDoctors] = useState(true)
-  const [bookingDoctorId, setBookingDoctorId] = useState('')
+  const [isLoadingMentors, setIsLoadingMentors] = useState(true)
+  const [bookingMentorId, setBookingMentorId] = useState('')
   const [error, setError] = useState('')
   const [message, setMessage] = useState('')
 
   const loadDirectory = useCallback(async () => {
     const options = { token: auth.accessToken }
-    const [doctorResult, appointmentResult] = await Promise.all([
-      authenticatedRequest('/api/user/auth/doctors', options, auth.refreshSession),
+    const [mentorResult, appointmentResult] = await Promise.all([
+      authenticatedRequest('/api/user/auth/mentors', options, auth.refreshSession),
       authenticatedRequest('/api/user/auth/appointments', options, auth.refreshSession)
     ])
-    setDoctors(doctorResult.doctors)
+    setMentors(mentorResult.mentors)
     setAppointments(appointmentResult.appointments)
   }, [auth.accessToken, auth.refreshSession])
 
@@ -84,7 +84,7 @@ export default function UserMain() {
         if (active) setError(requestError.message)
       })
       .finally(() => {
-        if (active) setIsLoadingDoctors(false)
+        if (active) setIsLoadingMentors(false)
       })
     return () => {
       active = false
@@ -94,23 +94,23 @@ export default function UserMain() {
   async function handleLogout() {
     try {
       await logout()
-      navigate('/user/login', { replace: true })
+      navigate('/student/login', { replace: true })
     } catch {
-      navigate('/user/login', { replace: true })
+      navigate('/student/login', { replace: true })
     }
   }
 
-  async function handleBookAppointment(event, doctor) {
+  async function handleBookAppointment(event, mentor) {
     event.preventDefault()
     setError('')
     setMessage('')
-    setBookingDoctorId(doctor._id)
+    setBookingMentorId(mentor._id)
     const scheduledAt = event.currentTarget.elements.scheduledAt.value
 
     try {
       const result = await authenticatedRequest('/api/user/auth/appointments', {
         method: 'POST',
-        body: { doctorId: doctor._id, scheduledAt: new Date(scheduledAt).toISOString() },
+        body: { mentorId: mentor._id, scheduledAt: new Date(scheduledAt).toISOString() },
         token: auth.accessToken
       }, auth.refreshSession)
       setMessage(result.message)
@@ -118,7 +118,7 @@ export default function UserMain() {
     } catch (requestError) {
       setError(requestError.message)
     } finally {
-      setBookingDoctorId('')
+      setBookingMentorId('')
     }
   }
 
@@ -127,7 +127,7 @@ export default function UserMain() {
       <header className="site-header">
         <Brand />
         <div className="account-header-actions">
-          <Link className="profile-back-link" to={`/user/profile/${user?.id}`}>Profile & wallet</Link>
+          <Link className="profile-back-link" to={`/student/profile/${user?.id}`}>Profile & wallet</Link>
           <button className="account-logout" disabled={isLoading} onClick={handleLogout} type="button">
             Sign out
           </button>
@@ -135,7 +135,7 @@ export default function UserMain() {
       </header>
 
       <section className="account-card user-welcome-card">
-        <span className="form-eyebrow">PATIENT ACCOUNT</span>
+        <span className="form-eyebrow">STUDENT ACCOUNT</span>
         <h1>Welcome, {user?.username || 'there'}.</h1>
         <p>You’re signed in to your Medix account.</p>
         <dl>
@@ -144,14 +144,14 @@ export default function UserMain() {
         </dl>
       </section>
 
-      <section className="doctor-directory" aria-labelledby="doctor-directory-title">
+      <section className="doctor-directory" aria-labelledby="mentor-directory-title">
         <div className="doctor-directory-heading">
           <div>
-            <span className="form-eyebrow">MEDIX DOCTORS</span>
-            <h2 id="doctor-directory-title">Find your doctor</h2>
-            <p>Browse verified, admin-approved doctors and request an appointment.</p>
+            <span className="form-eyebrow">MEDIX MENTORS</span>
+            <h2 id="mentor-directory-title">Find a mentor</h2>
+            <p>Browse verified mentors and request a mentorship session.</p>
           </div>
-          <Link className="directory-profile-link" to={`/user/profile/${user?.id}`}>
+          <Link className="directory-profile-link" to={`/student/profile/${user?.id}`}>
             <span>Manage profile</span><ArrowRight size={16} aria-hidden="true" />
           </Link>
         </div>
@@ -159,44 +159,39 @@ export default function UserMain() {
         {error && <p className="auth-feedback auth-feedback--error" role="alert">{error}</p>}
         {message && <p className="auth-feedback" role="status">{message}</p>}
 
-        {isLoadingDoctors ? (
-          <p className="auth-loading">Loading approved doctors…</p>
-        ) : doctors.length === 0 ? (
-          <p className="directory-empty">No approved doctors are available right now. Please check back soon.</p>
+        {isLoadingMentors ? (
+          <p className="auth-loading">Loading approved mentors…</p>
+        ) : mentors.length === 0 ? (
+          <p className="directory-empty">No approved mentors are available right now. Please check back soon.</p>
         ) : (
           <div className="doctor-directory-grid">
-            {doctors.map((doctor) => (
-              <article className="doctor-directory-card" key={doctor._id}>
+            {mentors.map((mentor) => (
+              <article className="doctor-directory-card" key={mentor._id}>
                 <div className="doctor-directory-profile">
-                  {doctor.profilePicture
-                    ? <img src={doctor.profilePicture} alt="" />
-                    : <span className="doctor-directory-avatar-fallback"><Stethoscope size={22} aria-hidden="true" /></span>}
+                  {mentor.profilePicture
+                    ? <img src={mentor.profilePicture} alt="" />
+                    : <span className="doctor-directory-avatar-fallback"><GraduationCap size={22} aria-hidden="true" /></span>}
                   <div>
-                    <h3>Dr. {doctor.username}</h3>
-                    <p>{doctor.specialization}</p>
+                    <h3>{mentor.username}</h3>
+                    <p>{mentor.expertise || 'Mentor'}</p>
                   </div>
                 </div>
 
-                {doctor.bio && <p className="doctor-directory-bio">{doctor.bio}</p>}
+                {mentor.bio && <p className="doctor-directory-bio">{mentor.bio}</p>}
                 <dl className="doctor-directory-details">
-                  <div><dt>Experience</dt><dd>{doctor.experienceYears || 0} years</dd></div>
-                  <div><dt>Consultation</dt><dd>₹{Number(doctor.consultationFee || 0).toLocaleString('en-IN')}</dd></div>
-                  {doctor.qualifications?.length > 0 && (
-                    <div><dt>Qualifications</dt><dd>{doctor.qualifications.join(', ')}</dd></div>
-                  )}
-                  {doctor.clinicAddress && (
-                    <div className="doctor-clinic-address">
-                      <dt><MapPin size={14} aria-hidden="true" /> Clinic</dt><dd>{doctor.clinicAddress}</dd>
-                    </div>
+                  <div><dt>Experience</dt><dd>{mentor.experienceYears || 0} years</dd></div>
+                  <div><dt>Mentor ID</dt><dd>{mentor.mentorId}</dd></div>
+                  {mentor.qualifications?.length > 0 && (
+                    <div><dt>Qualifications</dt><dd>{mentor.qualifications.join(', ')}</dd></div>
                   )}
                 </dl>
 
-                <form className="doctor-booking-form" onSubmit={(event) => handleBookAppointment(event, doctor)}>
-                  <label htmlFor={`appointment-${doctor._id}`}>
-                    <CalendarDays size={15} aria-hidden="true" /> Preferred date & time
+                <form className="doctor-booking-form" onSubmit={(event) => handleBookAppointment(event, mentor)}>
+                  <label htmlFor={`appointment-${mentor._id}`}>
+                    <CalendarDays size={15} aria-hidden="true" /> Preferred session date & time
                   </label>
                   <input
-                    id={`appointment-${doctor._id}`}
+                    id={`appointment-${mentor._id}`}
                     min={getLocalDateTimeMinimum()}
                     name="scheduledAt"
                     required
@@ -204,10 +199,10 @@ export default function UserMain() {
                   />
                   <button
                     className="submit-button"
-                    disabled={bookingDoctorId === doctor._id}
+                    disabled={bookingMentorId === mentor._id}
                     type="submit"
                   >
-                    <span>{bookingDoctorId === doctor._id ? 'Sending request…' : 'Request appointment'}</span>
+                    <span>{bookingMentorId === mentor._id ? 'Sending request…' : 'Request session'}</span>
                     <ArrowRight size={16} aria-hidden="true" />
                   </button>
                 </form>
@@ -218,17 +213,17 @@ export default function UserMain() {
       </section>
 
       <section className="user-appointments-section" aria-labelledby="user-appointments-title">
-        <span className="form-eyebrow">YOUR VISITS</span>
-        <h2 id="user-appointments-title">Appointment requests</h2>
+        <span className="form-eyebrow">YOUR LEARNING</span>
+        <h2 id="user-appointments-title">Mentorship session requests</h2>
         {appointments.length === 0 ? (
-          <p className="directory-empty">Your appointment requests will show here.</p>
+          <p className="directory-empty">Your mentorship session requests will show here.</p>
         ) : (
           <div className="user-appointment-list">
             {appointments.map((appointment) => (
               <article className="user-appointment-row" key={appointment._id}>
                 <div>
-                  <h3>Dr. {appointment.doctor?.username || 'Doctor'}</h3>
-                  <p>{appointment.doctor?.specialization} · {formatAppointmentDate(appointment.scheduledAt)}</p>
+                  <h3>{appointment.mentor?.username || 'Mentor'}</h3>
+                  <p>{appointment.mentor?.expertise} · {formatAppointmentDate(appointment.scheduledAt)}</p>
                 </div>
                 <span className={`appointment-status appointment-status--${appointment.status.toLowerCase()}`}>
                   {appointment.status}

@@ -3,7 +3,7 @@ import crypto from 'node:crypto';
 import { promisify } from 'node:util';
 import jwt from 'jsonwebtoken';
 import AdminModel from '../models/admin.model.js';
-import DoctorModel from '../models/doctor.model.js';
+import MentorModel from '../models/mentor.model.js';
 import userModel from '../models/user.model.js';
 import sessionModel from '../models/sessionn.model.js';
 import BlacklistedAccount from '../models/blacklistedAccount.model.js';
@@ -241,100 +241,100 @@ export async function logoutAdmin(req, res) {
     return res.status(200).json({ message: 'Admin logged out successfully' });
 }
 
-export async function listPendingDoctors(req, res) {
-    const doctors = await DoctorModel.find({ status: 'PENDING' })
-        .select('-password')
+export async function listPendingMentors(req, res) {
+    const mentors = await MentorModel.find({ status: 'PENDING' })
+        .select('-password +Adhar_Card +qualificationCertificate')
         .sort({ createdAt: 1 });
 
-    return res.status(200).json({ doctors });
+    return res.status(200).json({ mentors });
 }
 
-export async function approveDoctor(req, res) {
-    const { doctorId } = req.params;
-    if (!mongoose.isValidObjectId(doctorId)) {
-        return res.status(400).json({ message: 'Invalid doctor ID' });
+export async function approveMentor(req, res) {
+    const { mentorId } = req.params;
+    if (!mongoose.isValidObjectId(mentorId)) {
+        return res.status(400).json({ message: 'Invalid mentor ID' });
     }
 
-    const doctor = await DoctorModel.findOneAndUpdate(
-        { _id: doctorId, status: 'PENDING' },
+    const mentor = await MentorModel.findOneAndUpdate(
+        { _id: mentorId, status: 'PENDING' },
         { status: 'APPROVED' },
         { new: true, runValidators: true }
     ).select('-password');
 
-    if (doctor) {
+    if (mentor) {
         return res.status(200).json({
-            message: 'Doctor approved successfully',
-            doctor
+            message: 'Mentor approved successfully',
+            mentor
         });
     }
 
-    if (!await DoctorModel.exists({ _id: doctorId })) {
-        return res.status(404).json({ message: 'Doctor not found' });
+    if (!await MentorModel.exists({ _id: mentorId })) {
+        return res.status(404).json({ message: 'Mentor not found' });
     }
 
-    return res.status(409).json({ message: 'Only pending doctors can be approved' });
+    return res.status(409).json({ message: 'Only pending mentors can be approved' });
 }
 
-export async function rejectDoctor(req, res) {
-    const { doctorId } = req.params;
-    if (!mongoose.isValidObjectId(doctorId)) {
-        return res.status(400).json({ message: 'Invalid doctor ID' });
+export async function rejectMentor(req, res) {
+    const { mentorId } = req.params;
+    if (!mongoose.isValidObjectId(mentorId)) {
+        return res.status(400).json({ message: 'Invalid mentor ID' });
     }
 
-    const doctor = await DoctorModel.findOneAndUpdate(
-        { _id: doctorId, status: 'PENDING' },
+    const mentor = await MentorModel.findOneAndUpdate(
+        { _id: mentorId, status: 'PENDING' },
         { status: 'REJECTED' },
         { new: true, runValidators: true }
     ).select('-password');
 
-    if (doctor) {
+    if (mentor) {
         await sessionModel.updateMany(
-            { doctor: doctor._id, accountType: 'doctor', revoked: false },
+            { mentor: mentor._id, accountType: 'mentor', revoked: false },
             { revoked: true }
         );
-        return res.status(200).json({ message: 'Doctor rejected successfully', doctor });
+        return res.status(200).json({ message: 'Mentor rejected successfully', mentor });
     }
 
-    if (!await DoctorModel.exists({ _id: doctorId })) {
-        return res.status(404).json({ message: 'Doctor not found' });
+    if (!await MentorModel.exists({ _id: mentorId })) {
+        return res.status(404).json({ message: 'Mentor not found' });
     }
 
-    return res.status(409).json({ message: 'Only pending doctors can be rejected' });
+    return res.status(409).json({ message: 'Only pending mentors can be rejected' });
 }
 
-export async function blacklistDoctor(req, res) {
-    const { doctorId } = req.params;
-    if (!mongoose.isValidObjectId(doctorId)) {
-        return res.status(400).json({ message: 'Invalid doctor ID' });
+export async function blacklistMentor(req, res) {
+    const { mentorId } = req.params;
+    if (!mongoose.isValidObjectId(mentorId)) {
+        return res.status(400).json({ message: 'Invalid mentor ID' });
     }
 
-    const doctor = await DoctorModel.findById(doctorId);
-    if (!doctor) {
-        return res.status(404).json({ message: 'Doctor not found' });
+    const mentor = await MentorModel.findById(mentorId);
+    if (!mentor) {
+        return res.status(404).json({ message: 'Mentor not found' });
     }
-    if (!doctor.active) {
-        return res.status(409).json({ message: 'Doctor is already blacklisted' });
+    if (!mentor.active) {
+        return res.status(409).json({ message: 'Mentor is already blacklisted' });
     }
 
     await BlacklistedAccount.create({
-        accountId: doctor._id,
-        accountType: 'doctor',
-        email: doctor.email
+        accountId: mentor._id,
+        accountType: 'mentor',
+        email: mentor.email
     });
-    doctor.active = false;
-    await doctor.save();
+    mentor.active = false;
+    await mentor.save();
     await sessionModel.updateMany(
-        { doctor: doctor._id, accountType: 'doctor', revoked: false },
+        { mentor: mentor._id, accountType: 'mentor', revoked: false },
         { revoked: true }
     );
 
     return res.status(200).json({
-        message: 'Doctor blacklisted successfully',
-        doctor: {
-            id: doctor._id,
-            email: doctor.email,
-            active: doctor.active,
-            status: doctor.status
+        message: 'Mentor blacklisted successfully',
+        mentor: {
+            id: mentor._id,
+            email: mentor.email,
+            active: mentor.active,
+            status: mentor.status
         }
     });
 }

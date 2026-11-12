@@ -8,11 +8,11 @@ const sessionSchema = new mongoose.Schema({
             return this.accountType === "user";
         }
     },
-    doctor: {
+    mentor: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "Doctor",
+        ref: "Mentor",
         required: function () {
-            return this.accountType === "doctor";
+            return this.accountType === "mentor";
         }
     },
     admin: {
@@ -24,7 +24,7 @@ const sessionSchema = new mongoose.Schema({
     },
     accountType: {
         type: String,
-        enum: ["user", "doctor", "admin"],
+        enum: ["user", "mentor", "admin"],
         default: "user"
     },
     refreshTokenHash: {

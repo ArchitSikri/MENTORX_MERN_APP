@@ -7,9 +7,9 @@ const appointmentSchema = new mongoose.Schema({
         required: true,
         index: true
     },
-    doctor: {
+    mentor: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Doctor',
+        ref: 'Mentor',
         required: true,
         index: true
     },
@@ -30,7 +30,7 @@ const appointmentSchema = new mongoose.Schema({
     }
 }, { timestamps: true });
 
-appointmentSchema.index({ doctor: 1, scheduledAt: 1, status: 1 });
+appointmentSchema.index({ mentor: 1, scheduledAt: 1, status: 1 });
 
 const AppointmentModel = mongoose.model('Appointment', appointmentSchema);
 

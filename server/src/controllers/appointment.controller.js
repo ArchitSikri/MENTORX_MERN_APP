@@ -1,29 +1,29 @@
 import mongoose from 'mongoose';
 import AppointmentModel from '../models/appointment.model.js';
-import DoctorModel from '../models/doctor.model.js';
+import MentorModel from '../models/mentor.model.js';
 
-export async function listApprovedDoctors(req, res) {
-    const doctors = await DoctorModel.find({
+export async function listApprovedMentors(req, res) {
+    const mentors = await MentorModel.find({
         active: true,
         verified: true,
         status: 'APPROVED'
     })
-        .select('username profilePicture specialization qualifications experienceYears consultationFee bio clinicAddress Ratings')
-        .sort({ specialization: 1, username: 1 })
+        .select('username profilePicture mentorId expertise qualifications experienceYears bio')
+        .sort({ expertise: 1, username: 1 })
         .lean();
 
-    return res.status(200).json({ doctors });
+    return res.status(200).json({ mentors });
 }
 
 export async function createAppointment(req, res) {
-    const { doctorId, scheduledAt, reason } = req.body ?? {};
+    const { mentorId, scheduledAt, reason } = req.body ?? {};
     if (
-        typeof doctorId !== 'string' ||
-        !mongoose.isValidObjectId(doctorId) ||
+        typeof mentorId !== 'string' ||
+        !mongoose.isValidObjectId(mentorId) ||
         typeof scheduledAt !== 'string' ||
         (reason != null && typeof reason !== 'string')
     ) {
-        return res.status(400).json({ message: 'A valid doctor and appointment date/time are required' });
+        return res.status(400).json({ message: 'A valid mentor and session date/time are required' });
     }
 
     const appointmentDate = new Date(scheduledAt);
@@ -34,18 +34,18 @@ export async function createAppointment(req, res) {
         return res.status(400).json({ message: 'Appointment note cannot exceed 500 characters' });
     }
 
-    const doctor = await DoctorModel.findOne({
-        _id: doctorId,
+    const mentor = await MentorModel.findOne({
+        _id: mentorId,
         active: true,
         verified: true,
         status: 'APPROVED'
     }).select('_id');
-    if (!doctor) {
-        return res.status(404).json({ message: 'This doctor is not available for appointments' });
+    if (!mentor) {
+        return res.status(404).json({ message: 'This mentor is not available for sessions' });
     }
 
     const conflictingAppointment = await AppointmentModel.exists({
-        doctor: doctor._id,
+        mentor: mentor._id,
         scheduledAt: appointmentDate,
         status: { $in: ['PENDING', 'CONFIRMED'] }
     });
@@ -55,27 +55,27 @@ export async function createAppointment(req, res) {
 
     const appointment = await AppointmentModel.create({
         user: req.user._id,
-        doctor: doctor._id,
+        mentor: mentor._id,
         scheduledAt: appointmentDate,
         reason: reason?.trim() || ''
     });
 
     return res.status(201).json({
-        message: 'Appointment request sent to the doctor',
+        message: 'Mentorship session request sent',
         appointment
     });
 }
 
 export async function listUserAppointments(req, res) {
     const appointments = await AppointmentModel.find({ user: req.user._id })
-        .populate('doctor', 'username profilePicture specialization consultationFee')
+        .populate('mentor', 'username profilePicture mentorId expertise')
         .sort({ scheduledAt: -1 })
         .lean();
     return res.status(200).json({ appointments });
 }
 
-export async function listDoctorAppointments(req, res) {
-    const appointments = await AppointmentModel.find({ doctor: req.doctor._id })
+export async function listMentorAppointments(req, res) {
+    const appointments = await AppointmentModel.find({ mentor: req.mentor._id })
         .populate('user', 'username email profilePicture')
         .sort({ scheduledAt: 1 })
         .lean();
@@ -90,17 +90,17 @@ export async function updateAppointmentStatus(req, res) {
     }
 
     const appointment = await AppointmentModel.findOneAndUpdate(
-        { _id: appointmentId, doctor: req.doctor._id, status: 'PENDING' },
+        { _id: appointmentId, mentor: req.mentor._id, status: 'PENDING' },
         { $set: { status } },
         { new: true, runValidators: true }
     ).populate('user', 'username email profilePicture');
 
     if (!appointment) {
-        return res.status(404).json({ message: 'Pending appointment not found for this doctor' });
+        return res.status(404).json({ message: 'Pending session request not found for this mentor' });
     }
 
     return res.status(200).json({
-        message: `Appointment ${status.toLowerCase()}`,
+        message: `Mentorship session ${status.toLowerCase()}`,
         appointment
     });
 }

@@ -10,12 +10,12 @@ const otpSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: "users",
         required: function () {
-            return !this.doctor;
+            return !this.mentor;
         }
     },
-    doctor: {
+    mentor: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "Doctor",
+        ref: "Mentor",
         required: function () {
             return !this.user;
         }

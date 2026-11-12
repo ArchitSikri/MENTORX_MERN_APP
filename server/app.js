@@ -3,7 +3,7 @@ import morgan from 'morgan';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import authRouter from './src/routes/authUser.route.js';
-import doctorAuthRouter from './src/routes/doctorAuth.route.js';
+import mentorAuthRouter from './src/routes/mentorAuth.route.js';
 import adminRouter from './src/routes/admin.route.js';
 
 const app = express();
@@ -27,7 +27,7 @@ app.use(cors({
     credentials: true
 }));
 app.use('/api/user/auth', authRouter);
-app.use('/api/doctor/auth', doctorAuthRouter);
+app.use('/api/mentor/auth', mentorAuthRouter);
 app.use('/api/admin', adminRouter);
 
 

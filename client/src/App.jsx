@@ -2,8 +2,8 @@ import { Navigate, Route, Routes, useLocation } from 'react-router-dom'
 import { useContext, useLayoutEffect, useRef } from 'react'
 import { gsap } from 'gsap'
 import Home from './pages/Home.jsx'
-import DocRegister from './pages/DocRegister.jsx'
-import DocLogin from './pages/DocLogin.jsx'
+import MentorRegister from './pages/MentorRegister.jsx'
+import MentorLogin from './pages/MentorLogin.jsx'
 import UserRegister from './pages/UserRegister.jsx'
 import UserLogin from './pages/UserLogin.jsx'
 import AdminLogin from './pages/AdminLogin.jsx'
@@ -11,15 +11,16 @@ import AdminRegister from './pages/AdminRegister.jsx'
 import AdminMain from './pages/AdminMain.jsx'
 import UserMain from './pages/UserMain.jsx'
 import UserProfile from './pages/UserProfile.jsx'
-import DocMain from './pages/DocMain.jsx'
+import MentorMain from './pages/MentorMain.jsx'
 import UserContext from './context/UserContext.jsx'
-import DoctorContext from './context/DocContext.jsx'
-import { DoctorDataContext } from './context/DoctorDataContext.js'
+import MentorContext from './context/MentorContext.jsx'
+import { MentorDataContext } from './context/MentorDataContext.js'
 import { UserDataContext } from './context/UserDataContext.js'
 
 function AuthGuard({ audience, children }) {
-  const auth = useContext(audience === 'doctor' ? DoctorDataContext : UserDataContext)
-  const loginPath = audience === 'doctor' ? '/doctor/login' : '/user/login'
+  const isMentor = audience === 'mentor'
+  const auth = useContext(isMentor ? MentorDataContext : UserDataContext)
+  const loginPath = isMentor ? '/mentor/login' : '/student/login'
 
   if (auth.isLoading) {
     return <main className="auth-page auth-loading" aria-live="polite">Restoring your session…</main>
@@ -58,10 +59,10 @@ function AnimatedRoutes() {
     <div ref={pageRef} className="page-transition">
       <Routes location={location}>
         <Route path="/" element={<Home />} />
-        <Route path="/doctor/register" element={<DocRegister />} />
-        <Route path="/doctor/login" element={<DocLogin />} />
-        <Route path="/user/register" element={<UserRegister />} />
-        <Route path="/user/login" element={<UserLogin />} />
+        <Route path="/mentor/register" element={<MentorRegister />} />
+        <Route path="/mentor/login" element={<MentorLogin />} />
+        <Route path="/student/register" element={<UserRegister />} />
+        <Route path="/student/login" element={<UserLogin />} />
         <Route path="/admin/login" element={<AdminLogin />} />
         <Route path="/admin/register" element={<AdminRegister />} />
         <Route
@@ -69,16 +70,16 @@ function AnimatedRoutes() {
           element={<AdminGuard><AdminMain /></AdminGuard>}
         />
         <Route
-          path="/user/dashboard"
-          element={<AuthGuard audience="user"><UserMain /></AuthGuard>}
+          path="/student/dashboard"
+          element={<AuthGuard audience="student"><UserMain /></AuthGuard>}
         />
         <Route
-          path="/user/profile/:userId"
-          element={<AuthGuard audience="user"><UserProfile /></AuthGuard>}
+          path="/student/profile/:userId"
+          element={<AuthGuard audience="student"><UserProfile /></AuthGuard>}
         />
         <Route
-          path="/doctor/dashboard"
-          element={<AuthGuard audience="doctor"><DocMain /></AuthGuard>}
+          path="/mentor/dashboard"
+          element={<AuthGuard audience="mentor"><MentorMain /></AuthGuard>}
         />
 
         <Route path="*" element={<Navigate to="/" replace />} />
@@ -90,9 +91,9 @@ function AnimatedRoutes() {
 export default function App() {
   return (
     <UserContext>
-      <DoctorContext>
+      <MentorContext>
         <AnimatedRoutes />
-      </DoctorContext>
+      </MentorContext>
     </UserContext>
   )
 }

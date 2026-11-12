@@ -205,7 +205,7 @@ export default function UserProfile() {
     <main className="account-page">
       <header className="site-header">
         <Brand />
-        <Link className="profile-back-link" to="/user/dashboard">
+        <Link className="profile-back-link" to="/student/dashboard">
           <ArrowLeft size={16} aria-hidden="true" />
           <span>Back to dashboard</span>
         </Link>

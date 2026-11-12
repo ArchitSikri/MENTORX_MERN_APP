@@ -7,7 +7,7 @@ const blacklistedAccountSchema = new mongoose.Schema({
     },
     accountType: {
         type: String,
-        enum: ['user', 'doctor'],
+        enum: ['user', 'mentor'],
         required: true
     },
     email: {

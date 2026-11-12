@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 import jwt from 'jsonwebtoken';
 import userModel from '../models/user.model.js';
-import DoctorModel from '../models/doctor.model.js';
+import MentorModel from '../models/mentor.model.js';
 import AdminModel from '../models/admin.model.js';
 import sessionModel from '../models/sessionn.model.js';
 import BlacklistToken from '../models/blacklistToken.model.js';
@@ -76,7 +76,7 @@ export async function authUser(req, res, next) {
     return next();
 }
 
-export async function authDoctor(req, res, next) {
+export async function authMentor(req, res, next) {
     const token = getBearerToken(req);
     if (!token) {
         return res.status(401).json({ message: 'Unauthorized' });
@@ -86,22 +86,22 @@ export async function authDoctor(req, res, next) {
         return;
     }
 
-    const doctorId = verifyToken(token, res);
-    if (!doctorId) {
+    const mentorId = verifyToken(token, res);
+    if (!mentorId) {
         return;
     }
 
-    const doctor = await DoctorModel.findById(doctorId);
+    const mentor = await MentorModel.findById(mentorId);
     if (
-        !doctor ||
-        !doctor.active ||
-        doctor.status !== 'APPROVED' ||
-        await BlacklistedAccount.exists({ accountType: 'doctor', accountId: doctorId })
+        !mentor ||
+        !mentor.active ||
+        mentor.status !== 'APPROVED' ||
+        await BlacklistedAccount.exists({ accountType: 'mentor', accountId: mentorId })
     ) {
         return res.status(401).json({ message: 'Unauthorized' });
     }
 
-    req.doctor = doctor;
+    req.mentor = mentor;
     return next();
 }
 

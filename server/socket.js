@@ -1,6 +1,6 @@
 import { Server } from 'socket.io';
 import userModel from './src/models/user.model.js';
-import DoctorModel from './src/models/doctor.model.js';
+import MentorModel from './src/models/mentor.model.js';
 
 let io;
 
@@ -19,8 +19,8 @@ export function initializeSocket(server) {
 
             if (userType === 'user') {
                 await userModel.findByIdAndUpdate(userId, { socketId: socket.id });
-            } else if (userType === 'captain') {
-                await DoctorModel.findByIdAndUpdate(userId, { socketId: socket.id });
+            } else if (userType === 'mentor') {
+                await MentorModel.findByIdAndUpdate(userId, { socketId: socket.id });
             }
         });
         socket.on('disconnect', () => {
@@ -29,6 +29,6 @@ export function initializeSocket(server) {
     });
 }
 
-export function notifyDoctorRegistration() {
-    io?.emit('doctor:registered');
+export function notifyMentorRegistration() {
+    io?.emit('mentor:registered');
 }

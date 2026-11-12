@@ -1,30 +1,30 @@
-import { ArrowUpRight, Stethoscope, UserRound } from 'lucide-react'
+import { ArrowUpRight, GraduationCap, UserRound } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { Brand } from '../components/AuthPage.jsx'
 
 const destinations = [
   {
-    label: 'Register as a doctor',
-    detail: 'For healthcare professionals',
-    path: '/doctor/register',
-    icon: Stethoscope
+    label: 'Register as a mentor',
+    detail: 'Share your knowledge and experience',
+    path: '/mentor/register',
+    icon: GraduationCap
   },
   {
-    label: 'Login as a doctor',
-    detail: 'Your professional account',
-    path: '/doctor/login',
-    icon: Stethoscope
+    label: 'Login as a mentor',
+    detail: 'Continue mentoring students',
+    path: '/mentor/login',
+    icon: GraduationCap
   },
   {
-    label: 'Register as a user',
-    detail: 'Start your care journey',
-    path: '/user/register',
+    label: 'Register as a student',
+    detail: 'Start learning with a mentor',
+    path: '/student/register',
     icon: UserRound
   },
   {
-    label: 'Login as a user',
-    detail: 'Return to your account',
-    path: '/user/login',
+    label: 'Login as a student',
+    detail: 'Continue your learning journey',
+    path: '/student/login',
     icon: UserRound
   }
 ]
@@ -36,25 +36,24 @@ export default function Home() {
         <Brand />
         <span className="header-note">
           <i className="ri-heart-pulse-line" aria-hidden="true" />
-          Care, considered.
+          Learn, grow, connect.
         </span>
       </header>
 
       <section className="home-content">
         <div className="home-intro">
-          <span className="home-eyebrow">A BETTER WAY TO CONNECT WITH CARE</span>
+          <span className="home-eyebrow">A BETTER WAY TO LEARN TOGETHER</span>
           <h1>
-            Your health,
+            Your future,
             <br />
-            <em>held with care.</em>
+            <em>guided by mentors.</em>
           </h1>
           <p>
-            A thoughtful place for the people who give care
-            and the people who need it.
+            A community for students seeking guidance and mentors ready to share what they know.
           </p>
           <div className="home-signature">
             <span className="signature-line" />
-            <span>Care begins here</span>
+            <span>Your journey begins here</span>
           </div>
         </div>
 
@@ -80,9 +79,9 @@ export default function Home() {
       </section>
 
       <footer className="site-footer">
-        <span>© {new Date().getFullYear()} Medix Health</span>
-        <span>Thoughtful care. Human connection.</span>
-        <span className="footer-location">Made with care <span aria-hidden="true">·</span> For everyone</span>
+        <span>© {new Date().getFullYear()} Medix</span>
+        <span>Guidance. Growth. Human connection.</span>
+        <span className="footer-location">Learn together <span aria-hidden="true">·</span> Grow together</span>
       </footer>
     </main>
   )

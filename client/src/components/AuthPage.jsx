@@ -1,8 +1,8 @@
 import { useContext, useEffect, useState } from 'react'
-import { ArrowLeft, ArrowRight, Eye, EyeOff, FileUp, LockKeyhole, Mail, Stethoscope, UserRound, Wallet } from 'lucide-react'
+import { ArrowLeft, ArrowRight, Eye, EyeOff, FileUp, GraduationCap, LockKeyhole, Mail, UserRound, Wallet } from 'lucide-react'
 import { Link, useNavigate } from 'react-router-dom'
 import { GoogleLogin } from '@react-oauth/google'
-import { DoctorDataContext } from '../context/DoctorDataContext.js'
+import { MentorDataContext } from '../context/MentorDataContext.js'
 import { UserDataContext } from '../context/UserDataContext.js'
 
 function Brand() {
@@ -70,7 +70,14 @@ function TextField({ id, name = id, label, placeholder, type = 'text', icon: Ico
   )
 }
 
-function FileField({ id, name = id, label, required = false }) {
+function FileField({
+  id,
+  name = id,
+  label,
+  required = false,
+  accept = 'image/jpeg,image/png,image/webp,image/gif,image/bmp',
+  hint = 'JPG, PNG or WEBP · max 5 MB'
+}) {
   return (
     <label className="field file-field" htmlFor={id}>
       <span className="field-label">
@@ -84,11 +91,11 @@ function FileField({ id, name = id, label, required = false }) {
           <FileUp size={18} strokeWidth={1.7} />
         </span>
         <span className="file-input-copy">
-          <span>Choose an image</span>
-          <small>JPG, PNG or WEBP · max 5 MB</small>
+          <span>Choose a file</span>
+          <small>{hint}</small>
         </span>
         <input
-          accept="image/jpeg,image/png,image/webp,image/gif,image/bmp"
+          accept={accept}
           id={id}
           name={name}
           required={required}
@@ -101,30 +108,30 @@ function FileField({ id, name = id, label, required = false }) {
 
 export default function AuthPage({ audience, mode }) {
   const userAuth = useContext(UserDataContext)
-  const doctorAuth = useContext(DoctorDataContext)
-  const auth = audience === 'doctor' ? doctorAuth : userAuth
+  const mentorAuth = useContext(MentorDataContext)
+  const auth = audience === 'mentor' ? mentorAuth : userAuth
   const navigate = useNavigate()
   const [stage, setStage] = useState('form')
   const [verificationEmail, setVerificationEmail] = useState('')
   const [statusMessage, setStatusMessage] = useState('')
-  const isDoctor = audience === 'doctor'
+  const isMentor = audience === 'mentor'
   const isRegister = mode === 'register'
-  const isDoctorRegistration = isDoctor && isRegister
-  const showGoogleAuth = !isDoctor && stage === 'form'
-  const audienceLabel = isDoctor ? 'Healthcare professional' : 'Patient & visitor'
+  const isMentorRegistration = isMentor && isRegister
+  const showGoogleAuth = !isMentor && stage === 'form'
+  const audienceLabel = isMentor ? 'Mentor' : 'Student'
   const pageTitle = isRegister ? 'Create your account' : 'Welcome back'
   const pageDescription = isRegister
     ? 'A few details are all we need to get you started.'
     : 'Sign in to continue to your Medix account.'
-  const alternatePath = isDoctor
-    ? (isRegister ? '/doctor/login' : '/doctor/register')
-    : (isRegister ? '/user/login' : '/user/register')
+  const alternatePath = isMentor
+    ? (isRegister ? '/mentor/login' : '/mentor/register')
+    : (isRegister ? '/student/login' : '/student/register')
 
   useEffect(() => {
     if (!isRegister && auth.account) {
-      navigate(isDoctor ? '/doctor/dashboard' : '/user/dashboard', { replace: true })
+      navigate(isMentor ? '/mentor/dashboard' : '/student/dashboard', { replace: true })
     }
-  }, [auth.account, isDoctor, isRegister, navigate])
+  }, [auth.account, isMentor, isRegister, navigate])
 
   async function handleSubmit(event) {
     event.preventDefault()
@@ -169,7 +176,7 @@ export default function AuthPage({ audience, mode }) {
         email,
         password: String(formData.get('password') || '')
       })
-      navigate(isDoctor ? '/doctor/dashboard' : '/user/dashboard', { replace: true })
+      navigate(isMentor ? '/mentor/dashboard' : '/student/dashboard', { replace: true })
     } catch {
       // The context stores request errors for the form to display.
     }
@@ -180,7 +187,7 @@ export default function AuthPage({ audience, mode }) {
     setStatusMessage('')
     try {
       await auth.googleLogin(response.credential)
-      navigate('/user/dashboard', { replace: true })
+      navigate('/student/dashboard', { replace: true })
     } catch {
       // The context stores request errors for the form to display.
     }
@@ -196,50 +203,50 @@ export default function AuthPage({ audience, mode }) {
         </Link>
       </header>
 
-      <div className={`auth-layout${isDoctorRegistration ? ' auth-layout--doctor-register' : ''}`}>
+      <div className={`auth-layout${isMentorRegistration ? ' auth-layout--doctor-register' : ''}`}>
         <section className="auth-intro" aria-label={`${audienceLabel} access`}>
           <div className="intro-kicker">
-            {isDoctor
-              ? <Stethoscope size={15} strokeWidth={1.7} aria-hidden="true" />
+            {isMentor
+              ? <GraduationCap size={15} strokeWidth={1.7} aria-hidden="true" />
               : <UserRound size={15} strokeWidth={1.7} aria-hidden="true" />}
             <span>{audienceLabel}</span>
           </div>
           <h1>
-            Care that feels
+            Guidance that feels
             <br />
             <em>closer.</em>
           </h1>
           <p>
-            Thoughtful care starts with a more human connection.
+            Learning grows through a more human connection.
             We’re glad you’re here.
           </p>
           <div className="intro-rule" />
-          <span className="intro-note">A little more care, in every connection.</span>
+          <span className="intro-note">A little more guidance, in every connection.</span>
         </section>
 
-        <section className={`auth-form-panel${isDoctorRegistration ? ' auth-form-panel--doctor' : ''}`} aria-labelledby="form-title">
+        <section className={`auth-form-panel${isMentorRegistration ? ' auth-form-panel--doctor' : ''}`} aria-labelledby="form-title">
           <div className="form-heading">
             <span className="form-eyebrow">
-              {isDoctorRegistration ? 'DOCTOR REGISTRATION' : isRegister ? 'GET STARTED' : 'YOUR ACCOUNT'}
+              {isMentorRegistration ? 'MENTOR REGISTRATION' : isRegister ? 'STUDENT REGISTRATION' : 'YOUR ACCOUNT'}
             </span>
             <h2 id="form-title">
               {stage === 'verify'
                 ? 'Verify your email'
                 : stage === 'verified'
                   ? 'Email verified'
-                  : isDoctorRegistration
-                    ? 'Your professional profile'
+                  : isMentorRegistration
+                    ? 'Your mentor profile'
                     : pageTitle}
             </h2>
             <p>
               {stage === 'verify'
                 ? `Enter the verification code sent to ${verificationEmail}.`
                 : stage === 'verified'
-                  ? (isDoctor
+                  ? (isMentor
                     ? 'Your profile is now waiting for administrator approval.'
                     : 'Your account is ready. Sign in to continue.')
-                  : isDoctorRegistration
-                    ? 'Share your details and credentials to create your doctor profile.'
+                  : isMentorRegistration
+                    ? 'Share your details and documents to create your mentor profile.'
                     : pageDescription}
             </p>
           </div>
@@ -249,12 +256,12 @@ export default function AuthPage({ audience, mode }) {
 
           {stage === 'verified' ? (
             <Link className="submit-button auth-action-link" to={alternatePath}>
-              <span>{isDoctor ? 'Continue to sign in' : 'Sign in to your account'}</span>
+              <span>{isMentor ? 'Continue to sign in' : 'Sign in to your account'}</span>
               <ArrowRight size={17} strokeWidth={1.8} aria-hidden="true" />
             </Link>
           ) : (
           <form
-            className={`auth-form${isDoctorRegistration ? ' auth-form--doctor' : isRegister ? ' auth-form--user-register' : ''}`}
+            className={`auth-form${isMentorRegistration ? ' auth-form--doctor' : isRegister ? ' auth-form--user-register' : ''}`}
             onSubmit={handleSubmit}
           >
             {stage === 'verify' ? (
@@ -270,7 +277,7 @@ export default function AuthPage({ audience, mode }) {
                   required
                 />
               </>
-            ) : isDoctorRegistration ? (
+            ) : isMentorRegistration ? (
               <>
               <div className="form-section-heading">
                 <span className="form-section-number">01</span>
@@ -323,63 +330,47 @@ export default function AuthPage({ audience, mode }) {
               <div className="form-section-heading">
                 <span className="form-section-number">02</span>
                 <div>
-                  <h3>Professional details</h3>
-                  <p>Tell patients about your practice</p>
+                  <h3>Mentor profile</h3>
+                  <p>Share your experience and areas of expertise</p>
                 </div>
               </div>
+                <TextField
+                  autoComplete="off"
+                  icon={GraduationCap}
+                  id="mentorId"
+                  label="Mentor ID"
+                  placeholder="Your institution or organization ID"
+                  required
+                />
               <TextField
                 autoComplete="organization-title"
-                icon={Stethoscope}
-                id="specialization"
-                label="Specialization"
-                placeholder="e.g. Cardiology"
-                required
+                  icon={GraduationCap}
+                  id="expertise"
+                  label="Area of expertise"
+                  placeholder="e.g. Software engineering, Mathematics"
               />
               <TextField
                 autoComplete="off"
-                icon={Stethoscope}
+                  icon={GraduationCap}
                 id="qualifications"
-                label="Qualifications"
-                placeholder="e.g. MBBS, MD"
+                  label="Qualifications"
+                  placeholder="e.g. B.Tech, M.Sc."
               />
               <TextField
                 autoComplete="off"
-                icon={Stethoscope}
+                  icon={GraduationCap}
                 id="experienceYears"
                 label="Years of experience"
                 placeholder="e.g. 8"
                 type="number"
               />
-              <TextField
-                autoComplete="off"
-                icon={Stethoscope}
-                id="licenseNumber"
-                label="Medical registration / license number"
-                placeholder="Your registration number"
-                required
-              />
-              <TextField
-                autoComplete="off"
-                icon={Stethoscope}
-                id="consultationFee"
-                label="Consultation fee"
-                placeholder="e.g. 500"
-                type="number"
-              />
-              <TextField
-                autoComplete="street-address"
-                icon={Stethoscope}
-                id="clinicAddress"
-                label="Clinic address"
-                placeholder="Street, city, and postal code"
-              />
               <label className="field doctor-bio-field" htmlFor="bio">
-                <span className="field-label">Professional bio <span className="field-optional">Optional</span></span>
+                  <span className="field-label">About you <span className="field-optional">Optional</span></span>
                 <textarea
                   className="bio-input"
                   id="bio"
                   name="bio"
-                  placeholder="A short introduction to your experience and approach to care"
+                    placeholder="Briefly introduce your experience and mentoring approach"
                   rows="3"
                 />
               </label>
@@ -387,18 +378,20 @@ export default function AuthPage({ audience, mode }) {
               <div className="form-section-heading">
                 <span className="form-section-number">03</span>
                 <div>
-                  <h3>Identity & credentials</h3>
-                  <p>Upload clear images for verification</p>
+                  <h3>Verification documents</h3>
+                  <p>Upload documents for admin review</p>
                 </div>
               </div>
-              <FileField id="medical_license" label="Medical license" required />
               <FileField id="Adhar_Card" label="Aadhaar card" required />
-              <FileField id="pancard" label="PAN card" required />
-              <FileField id="UG_Degree_certificate" label="UG degree certificate" required />
-              <FileField id="PG_Degree_certificate" label="PG degree certificate" />
-              <FileField id="Photo" label="Professional photograph" required />
+                <FileField
+                  id="qualificationCertificate"
+                  label="Qualification certificate"
+                  accept="application/pdf,image/jpeg,image/png,image/webp"
+                  hint="PDF, JPG, PNG or WEBP · max 5 MB"
+                  required
+                />
               <p className="upload-note">
-                Your documents are used only for professional verification.
+                  Your documents are submitted for mentor verification.
               </p>
               </>
             ) : (
@@ -415,15 +408,6 @@ export default function AuthPage({ audience, mode }) {
                 />
               )}
               {isRegister && <FileField id="profilePicture" label="Profile picture" />}
-              {isRegister && (
-                <TextField
-                  autoComplete="off"
-                  icon={Wallet}
-                  id="UPI_Id"
-                  label="UPI ID"
-                  placeholder="name@bank"
-                />
-              )}
               <TextField
                 autoComplete="email"
                 icon={Mail}
@@ -457,7 +441,7 @@ export default function AuthPage({ audience, mode }) {
                   ? 'Please wait…'
                   : stage === 'verify'
                     ? 'Verify email'
-                    : isDoctorRegistration
+                    : isMentorRegistration
                       ? 'Continue with registration'
                       : isRegister
                         ? 'Create account'
@@ -504,8 +488,8 @@ export default function AuthPage({ audience, mode }) {
       </div>
 
       <footer className="site-footer auth-footer">
-        <span>© {new Date().getFullYear()} Medix Health</span>
-        <span>Here for your wellbeing.</span>
+        <span>© {new Date().getFullYear()} Medix</span>
+        <span>Here for your growth.</span>
       </footer>
     </main>
   )
