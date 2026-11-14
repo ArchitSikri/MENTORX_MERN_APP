@@ -12,7 +12,10 @@ import { authMentor } from '../middleware/authMiddleware.js';
 import { uploadMentorDocuments } from '../middleware/multer.middleware.js';
 import {
     listMentorAppointments,
-    updateAppointmentStatus
+    listAppointmentMessages,
+    sendAppointmentMessage,
+    updateAppointmentStatus,
+    updateMentorSessionFee
 } from '../controllers/appointment.controller.js';
 
 const mentorAuthRouter = Router();
@@ -24,6 +27,9 @@ mentorAuthRouter.post('/refresh', refreshMentorToken);
 mentorAuthRouter.get('/me', authMentor, getMentorMe);
 mentorAuthRouter.get('/appointments', authMentor, listMentorAppointments);
 mentorAuthRouter.patch('/appointments/:appointmentId', authMentor, updateAppointmentStatus);
+mentorAuthRouter.patch('/profile/session-fee', authMentor, updateMentorSessionFee);
+mentorAuthRouter.get('/appointments/:appointmentId/messages', authMentor, listAppointmentMessages);
+mentorAuthRouter.post('/appointments/:appointmentId/messages', authMentor, sendAppointmentMessage);
 mentorAuthRouter.post('/logout', authMentor, logoutMentor);
 mentorAuthRouter.post('/logout-all', authMentor, logoutAllMentorSessions);
 

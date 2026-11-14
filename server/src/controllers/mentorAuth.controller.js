@@ -35,6 +35,8 @@ function mentorResponse(mentor) {
         profilePicture: mentor.profilePicture,
         mentorId: mentor.mentorId,
         expertise: mentor.expertise,
+        sessionFeePaise: Number(mentor.sessionFeePaise) || 0,
+        walletBalance: Number(mentor.walletBalance) || 0,
         status: mentor.status,
         verified: mentor.verified
     };

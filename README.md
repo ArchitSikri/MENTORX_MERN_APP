@@ -115,7 +115,7 @@ The secret is only used by the backend. Wallet top-ups accept only Razorpay test
 
 Signed-in students can manage their profile and add ₹2,000 to their wallet at `/student/profile/:userId`. The wallet is credited only after the backend verifies the Razorpay order, signature, and captured payment.
 
-On the student dashboard, students can browse approved mentors and request a future mentorship session. Requests remain pending until the mentor accepts or declines them; session requests do not deduct wallet funds.
+On the student dashboard, students can browse mentors who have set a session fee and request a future session. Once a mentor accepts, the user can pay from their Medix wallet; the fee is credited to the mentor's in-app Medix wallet, and chat becomes available to both participants. Session wallet transfers use MongoDB transactions, so use MongoDB Atlas or a local replica set. This feature credits the mentor's in-app balance and does not automatically pay out to a bank account or UPI ID.
 
 ## 🎯 Project Objective
 

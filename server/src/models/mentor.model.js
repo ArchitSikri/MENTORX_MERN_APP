@@ -45,6 +45,16 @@ const mentorSchema = new mongoose.Schema({
         default: null,
         trim: true
     },
+    sessionFeePaise: {
+        type: Number,
+        default: 0,
+        min: 0
+    },
+    walletBalance: {
+        type: Number,
+        default: 0,
+        min: 0
+    },
     Adhar_Card: {
         type: String,
         required: [true, 'Aadhaar card is required'],

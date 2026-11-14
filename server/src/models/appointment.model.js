@@ -23,6 +23,26 @@ const appointmentSchema = new mongoose.Schema({
         default: 'PENDING',
         index: true
     },
+    sessionFeePaise: {
+        type: Number,
+        min: 0,
+        default: 0
+    },
+    paymentStatus: {
+        type: String,
+        enum: ['UNPAID', 'PAID'],
+        default: 'UNPAID',
+        index: true
+    },
+    amountPaidPaise: {
+        type: Number,
+        min: 0,
+        default: 0
+    },
+    paidAt: {
+        type: Date,
+        default: null
+    },
     reason: {
         type: String,
         maxlength: 500,

@@ -18,9 +18,12 @@ import {
 import { authUser } from '../middleware/authMiddleware.js';
 import { uploadUserProfilePicture } from '../middleware/multer.middleware.js';
 import {
+    listAppointmentMessages,
     createAppointment,
     listApprovedMentors,
-    listUserAppointments
+    listUserAppointments,
+    payForAppointment,
+    sendAppointmentMessage
 } from '../controllers/appointment.controller.js';
 
 const authRouter = Router();
@@ -32,6 +35,9 @@ authRouter.get('/me', authUser ,getMe);
 authRouter.get('/mentors', authUser, listApprovedMentors);
 authRouter.get('/appointments', authUser, listUserAppointments);
 authRouter.post('/appointments', authUser, createAppointment);
+authRouter.post('/appointments/:appointmentId/pay', authUser, payForAppointment);
+authRouter.get('/appointments/:appointmentId/messages', authUser, listAppointmentMessages);
+authRouter.post('/appointments/:appointmentId/messages', authUser, sendAppointmentMessage);
 authRouter.get('/profile/:userId', authUser, getUserProfile);
 authRouter.put('/profile/:userId', authUser, uploadUserProfilePicture, updateUserProfile);
 authRouter.post('/wallet/topup/order', authUser, createWalletTopupOrder);

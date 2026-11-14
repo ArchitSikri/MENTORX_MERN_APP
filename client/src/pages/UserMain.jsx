@@ -63,6 +63,7 @@ export default function UserMain() {
   const [appointments, setAppointments] = useState([])
   const [isLoadingMentors, setIsLoadingMentors] = useState(true)
   const [bookingMentorId, setBookingMentorId] = useState('')
+  const [payingAppointmentId, setPayingAppointmentId] = useState('')
   const [error, setError] = useState('')
   const [message, setMessage] = useState('')
 
@@ -119,6 +120,26 @@ export default function UserMain() {
       setError(requestError.message)
     } finally {
       setBookingMentorId('')
+    }
+  }
+
+  async function handlePayForSession(appointment) {
+    setError('')
+    setMessage('')
+    setPayingAppointmentId(appointment._id)
+    try {
+      const result = await authenticatedRequest(
+        `/api/user/auth/appointments/${appointment._id}/pay`,
+        { method: 'POST', body: {}, token: auth.accessToken },
+        auth.refreshSession
+      )
+      auth.setUser((current) => ({ ...current, wallet: result.userWallet }))
+      setMessage(result.message)
+      await loadDirectory()
+    } catch (requestError) {
+      setError(requestError.message)
+    } finally {
+      setPayingAppointmentId('')
     }
   }
 
@@ -184,6 +205,10 @@ export default function UserMain() {
                   {mentor.qualifications?.length > 0 && (
                     <div><dt>Qualifications</dt><dd>{mentor.qualifications.join(', ')}</dd></div>
                   )}
+                  <div>
+                    <dt>Session fee</dt>
+                    <dd>₹{(Number(mentor.sessionFeePaise) / 100).toLocaleString('en-IN', { minimumFractionDigits: 2 })}</dd>
+                  </div>
                 </dl>
 
                 <form className="doctor-booking-form" onSubmit={(event) => handleBookAppointment(event, mentor)}>
@@ -224,10 +249,40 @@ export default function UserMain() {
                 <div>
                   <h3>{appointment.mentor?.username || 'Mentor'}</h3>
                   <p>{appointment.mentor?.expertise} · {formatAppointmentDate(appointment.scheduledAt)}</p>
+                  {appointment.status === 'CONFIRMED' && (
+                    <p>
+                      Session fee: ₹{(Number(appointment.sessionFeePaise) / 100).toLocaleString('en-IN', { minimumFractionDigits: 2 })}
+                      {' · '}Payment: {appointment.paymentStatus || 'UNPAID'}
+                    </p>
+                  )}
                 </div>
-                <span className={`appointment-status appointment-status--${appointment.status.toLowerCase()}`}>
-                  {appointment.status}
-                </span>
+                <div className="doctor-appointment-actions">
+                  <span className={`appointment-status appointment-status--${appointment.status.toLowerCase()}`}>
+                    {appointment.status}
+                  </span>
+                  {appointment.status === 'CONFIRMED' && appointment.paymentStatus === 'PAID' && (
+                    <Link className="appointment-decision appointment-decision--confirm" to={`/student/chat/${appointment._id}`}>
+                      Chat with mentor
+                    </Link>
+                  )}
+                  {appointment.status === 'CONFIRMED' && appointment.paymentStatus !== 'PAID' && (
+                    <>
+                      <button
+                        className="appointment-decision appointment-decision--confirm"
+                        disabled={payingAppointmentId === appointment._id}
+                        onClick={() => handlePayForSession(appointment)}
+                        type="button"
+                      >
+                        {payingAppointmentId === appointment._id ? 'Paying…' : 'Make a payment'}
+                      </button>
+                      {Number(user?.wallet) < Number(appointment.sessionFeePaise) / 100 && (
+                        <Link className="appointment-decision" to={`/student/profile/${user?.id}`}>
+                          Add money
+                        </Link>
+                      )}
+                    </>
+                  )}
+                </div>
               </article>
             ))}
           </div>
