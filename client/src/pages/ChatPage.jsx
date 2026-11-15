@@ -1,6 +1,6 @@
 import { useCallback, useContext, useEffect, useRef, useState } from 'react'
-import { ArrowLeft, Send } from 'lucide-react'
-import { Link, useParams } from 'react-router-dom'
+import { ArrowLeft, PhoneCall, Send, Video } from 'lucide-react'
+import { Link, useNavigate, useParams } from 'react-router-dom'
 import { Brand } from '../components/AuthPage.jsx'
 import { MentorDataContext } from '../context/MentorDataContext.js'
 import { UserDataContext } from '../context/UserDataContext.js'
@@ -44,16 +44,21 @@ function formatMessageTime(date) {
 
 export default function ChatPage({ role }) {
   const { appointmentId } = useParams()
+  const navigate = useNavigate()
   const auth = useContext(role === 'mentor' ? MentorDataContext : UserDataContext)
   const [messages, setMessages] = useState([])
+  const [call, setCall] = useState(null)
   const [draft, setDraft] = useState('')
   const [error, setError] = useState('')
   const [isLoading, setIsLoading] = useState(true)
   const [isSending, setIsSending] = useState(false)
+  const [isCalling, setIsCalling] = useState(false)
+  const [callResponse, setCallResponse] = useState('')
   const messageListRef = useRef(null)
   const authPath = role === 'mentor' ? '/api/mentor/auth' : '/api/user/auth'
   const backPath = role === 'mentor' ? '/mentor/dashboard' : '/student/dashboard'
   const ownId = role === 'mentor' ? auth.mentor?.id : auth.user?.id
+  const callPath = `${authPath}/appointments/${appointmentId}/call`
 
   const loadMessages = useCallback(async () => {
     const result = await authenticatedRequest(
@@ -63,6 +68,15 @@ export default function ChatPage({ role }) {
     )
     setMessages(result.messages)
   }, [appointmentId, auth.accessToken, auth.refreshSession, authPath])
+
+  const loadCall = useCallback(async () => {
+    const result = await authenticatedRequest(
+      callPath,
+      { token: auth.accessToken },
+      auth.refreshSession
+    )
+    setCall(result.call)
+  }, [auth.accessToken, auth.refreshSession, callPath])
 
   useEffect(() => {
     let active = true
@@ -84,6 +98,25 @@ export default function ChatPage({ role }) {
       window.clearInterval(intervalId)
     }
   }, [loadMessages])
+
+  useEffect(() => {
+    let active = true
+    const refreshCall = async () => {
+      try {
+        await loadCall()
+        if (active) setCallResponse('')
+      } catch (requestError) {
+        if (active) setCallResponse(requestError.message)
+      }
+    }
+
+    refreshCall()
+    const intervalId = window.setInterval(refreshCall, 3000)
+    return () => {
+      active = false
+      window.clearInterval(intervalId)
+    }
+  }, [loadCall])
 
   useEffect(() => {
     const list = messageListRef.current
@@ -115,6 +148,50 @@ export default function ChatPage({ role }) {
     }
   }
 
+  async function handleStartCall() {
+    setCallResponse('')
+    setIsCalling(true)
+    try {
+      const result = await authenticatedRequest(callPath, {
+        method: 'POST',
+        body: {},
+        token: auth.accessToken
+      }, auth.refreshSession)
+      navigate(`/mentor/video-call/${appointmentId}/${result.call._id}`)
+    } catch (requestError) {
+      setCallResponse(requestError.message)
+    } finally {
+      setIsCalling(false)
+    }
+  }
+
+  async function handleCallResponse(status) {
+    if (!call) return
+
+    setCallResponse('')
+    setIsCalling(true)
+    try {
+      await authenticatedRequest(`${callPath}/${call._id}`, {
+        method: 'PATCH',
+        body: { status },
+        token: auth.accessToken
+      }, auth.refreshSession)
+      if (status === 'ACCEPTED') {
+        navigate(`/student/video-call/${appointmentId}/${call._id}`)
+      } else {
+        await loadCall()
+      }
+    } catch (requestError) {
+      setCallResponse(requestError.message)
+    } finally {
+      setIsCalling(false)
+    }
+  }
+
+  function getVideoCallPath() {
+    return `/${role === 'mentor' ? 'mentor' : 'student'}/video-call/${appointmentId}/${call._id}`
+  }
+
   return (
     <main className="account-page chat-page">
       <header className="site-header">
@@ -130,6 +207,59 @@ export default function ChatPage({ role }) {
           <h1 id="chat-title">Chat with {role === 'mentor' ? 'student' : 'mentor'}</h1>
           <p>Messages are available to the participants of this paid session.</p>
         </div>
+        <section className="chat-call-panel" aria-label="Video call">
+          {role === 'mentor' && !call && (
+            <button
+              className="appointment-decision appointment-decision--confirm chat-call-button"
+              disabled={isCalling}
+              onClick={handleStartCall}
+              type="button"
+            >
+              <Video size={16} aria-hidden="true" />
+              {isCalling ? 'Starting call…' : 'Start video call'}
+            </button>
+          )}
+          {role === 'user' && call?.status === 'PENDING' && (
+            <div className="chat-incoming-call">
+              <p><PhoneCall size={17} aria-hidden="true" /> Your mentor is inviting you to a video call.</p>
+              <div className="chat-call-actions">
+                <button
+                  className="appointment-decision appointment-decision--confirm"
+                  disabled={isCalling}
+                  onClick={() => handleCallResponse('ACCEPTED')}
+                  type="button"
+                >
+                  {isCalling ? 'Joining…' : 'Accept call'}
+                </button>
+                <button
+                  className="appointment-decision appointment-decision--reject"
+                  disabled={isCalling}
+                  onClick={() => handleCallResponse('DECLINED')}
+                  type="button"
+                >
+                  Decline
+                </button>
+              </div>
+            </div>
+          )}
+          {call?.status === 'PENDING' && role === 'mentor' && (
+            <div className="chat-incoming-call">
+              <p>Waiting for the student to accept your video call.</p>
+              <Link className="appointment-decision appointment-decision--confirm" to={getVideoCallPath()}>
+                Return to call
+              </Link>
+            </div>
+          )}
+          {call?.status === 'ACCEPTED' && (
+            <div className="chat-incoming-call">
+              <p>Your video call is ready to join.</p>
+              <Link className="appointment-decision appointment-decision--confirm" to={getVideoCallPath()}>
+                Join video call
+              </Link>
+            </div>
+          )}
+          {callResponse && <p className="auth-feedback auth-feedback--error" role="alert">{callResponse}</p>}
+        </section>
         {error && <p className="auth-feedback auth-feedback--error" role="alert">{error}</p>}
         <div aria-live="polite" className="chat-message-list" ref={messageListRef}>
           {isLoading ? (

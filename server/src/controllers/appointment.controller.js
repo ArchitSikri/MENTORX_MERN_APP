@@ -4,6 +4,20 @@ import MentorModel from '../models/mentor.model.js';
 import userModel from '../models/user.model.js';
 import WalletTransaction from '../models/walletTransaction.model.js';
 import ChatMessage from '../models/chatMessage.model.js';
+import VideoCall from '../models/videoCall.model.js';
+import config from '../config/config.js';
+import { generateZegoToken } from '../utils/zegoToken.js';
+import { randomUUID } from 'node:crypto';
+
+const VIDEO_CALL_INVITE_TTL_MS = 2 * 60 * 1000;
+const VIDEO_CALL_MAX_DURATION_MS = 60 * 60 * 1000;
+
+function isZegoConfigured() {
+    return Number.isSafeInteger(config.ZEGO_APP_ID) &&
+        config.ZEGO_APP_ID > 0 &&
+        typeof config.ZEGO_SERVER_SECRET === 'string' &&
+        Buffer.byteLength(config.ZEGO_SERVER_SECRET) === 32;
+}
 
 export async function listApprovedMentors(req, res) {
     const mentors = await MentorModel.find({
@@ -349,4 +363,152 @@ export async function sendAppointmentMessage(req, res) {
         text: text.trim()
     });
     return res.status(201).json({ message });
+}
+
+export async function getAppointmentVideoCall(req, res) {
+    const appointment = await getPaidChatAppointment(req, res);
+    if (!appointment) return;
+
+    const now = new Date();
+    await VideoCall.updateMany(
+        {
+            appointment: appointment._id,
+            status: { $in: ['PENDING', 'ACCEPTED'] },
+            expiresAt: { $lte: now }
+        },
+        { $set: { status: 'EXPIRED' } }
+    );
+    const call = await VideoCall.findOne({
+        appointment: appointment._id,
+        status: { $in: ['PENDING', 'ACCEPTED'] }
+    }).sort({ createdAt: -1 }).lean();
+
+    return res.status(200).json({ call });
+}
+
+export async function createAppointmentVideoCall(req, res) {
+    const appointment = await getPaidChatAppointment(req, res);
+    if (!appointment) return;
+    if (!isZegoConfigured()) {
+        return res.status(503).json({ message: 'Video calling is not configured. Contact the administrator.' });
+    }
+
+    const now = new Date();
+    await VideoCall.updateMany(
+        {
+            appointment: appointment._id,
+            status: { $in: ['PENDING', 'ACCEPTED'] },
+            expiresAt: { $lte: now }
+        },
+        { $set: { status: 'EXPIRED' } }
+    );
+    const activeCall = await VideoCall.exists({
+        appointment: appointment._id,
+        status: { $in: ['PENDING', 'ACCEPTED'] }
+    });
+    if (activeCall) {
+        return res.status(409).json({ message: 'A video call is already pending or in progress' });
+    }
+
+    const call = await VideoCall.create({
+        appointment: appointment._id,
+        roomId: randomUUID(),
+        expiresAt: new Date(now.getTime() + VIDEO_CALL_INVITE_TTL_MS)
+    });
+    return res.status(201).json({ call });
+}
+
+export async function respondToAppointmentVideoCall(req, res) {
+    if (!req.user) {
+        return res.status(403).json({ message: 'Only the student can accept or decline this call' });
+    }
+    const appointment = await getPaidChatAppointment(req, res);
+    if (!appointment) return;
+
+    const { callId } = req.params;
+    const { status } = req.body ?? {};
+    if (!mongoose.isValidObjectId(callId) || !['ACCEPTED', 'DECLINED'].includes(status)) {
+        return res.status(400).json({ message: 'A valid call and response are required' });
+    }
+
+    const call = await VideoCall.findOneAndUpdate(
+        {
+            _id: callId,
+            appointment: appointment._id,
+            status: 'PENDING',
+            expiresAt: { $gt: new Date() }
+        },
+        {
+            $set: {
+                status,
+                ...(status === 'ACCEPTED'
+                    ? { expiresAt: new Date(Date.now() + VIDEO_CALL_MAX_DURATION_MS) }
+                    : {})
+            }
+        },
+        { new: true, runValidators: true }
+    );
+    if (!call) {
+        return res.status(409).json({ message: 'This video call is no longer available' });
+    }
+
+    return res.status(200).json({ call });
+}
+
+export async function endAppointmentVideoCall(req, res) {
+    const appointment = await getPaidChatAppointment(req, res);
+    if (!appointment) return;
+
+    const { callId } = req.params;
+    if (!mongoose.isValidObjectId(callId)) {
+        return res.status(400).json({ message: 'Invalid call ID' });
+    }
+
+    const call = await VideoCall.findOneAndUpdate(
+        { _id: callId, appointment: appointment._id, status: 'ACCEPTED' },
+        { $set: { status: 'ENDED' } },
+        { new: true }
+    );
+    if (!call) {
+        return res.status(409).json({ message: 'This video call is no longer in progress' });
+    }
+    return res.status(200).json({ call });
+}
+
+export async function createAppointmentVideoCallToken(req, res) {
+    const appointment = await getPaidChatAppointment(req, res);
+    if (!appointment) return;
+
+    const { callId } = req.params;
+    if (!mongoose.isValidObjectId(callId)) {
+        return res.status(400).json({ message: 'Invalid call ID' });
+    }
+    const call = await VideoCall.findOne({
+        _id: callId,
+        appointment: appointment._id,
+        status: 'ACCEPTED',
+        expiresAt: { $gt: new Date() }
+    }).lean();
+    if (!call) {
+        return res.status(409).json({ message: 'The student must accept the call before joining' });
+    }
+    if (!isZegoConfigured()) {
+        return res.status(503).json({ message: 'Video calling is not configured. Contact the administrator.' });
+    }
+
+    const account = req.user || req.mentor;
+    const userId = String(account._id);
+    const token = generateZegoToken(
+        config.ZEGO_APP_ID,
+        userId,
+        config.ZEGO_SERVER_SECRET
+    );
+
+    return res.status(200).json({
+        appId: config.ZEGO_APP_ID,
+        token,
+        roomId: call.roomId,
+        userId,
+        userName: account.username
+    });
 }

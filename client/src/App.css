@@ -972,6 +972,42 @@ html::-webkit-scrollbar {
   @apply mx-auto mt-10 mb-16 max-w-3xl rounded-2xl border border-line bg-white p-6 shadow-sm;
 }
 
+.chat-call-panel {
+  @apply mt-5 flex flex-wrap items-center gap-3 border-y border-line py-4;
+}
+
+.chat-call-button {
+  @apply inline-flex items-center gap-2;
+}
+
+.chat-incoming-call {
+  @apply flex w-full flex-wrap items-center justify-between gap-3;
+}
+
+.chat-incoming-call > p {
+  @apply flex items-center gap-2 text-sm text-ink;
+}
+
+.chat-call-actions {
+  @apply flex flex-wrap gap-2;
+}
+
+.video-call-card {
+  @apply mx-auto mt-10 mb-16 max-w-6xl rounded-2xl border border-line bg-white p-6 shadow-sm;
+}
+
+.video-call-room {
+  @apply mt-6 min-h-72 overflow-hidden rounded-xl bg-[#171717];
+}
+
+.video-call-room--active {
+  @apply h-[min(72vh,760px)];
+}
+
+.video-call-guidance {
+  @apply mt-4 text-sm text-muted;
+}
+
 .chat-heading h1 {
   @apply mt-2 font-display text-3xl;
 }

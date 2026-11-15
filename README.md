@@ -117,6 +117,8 @@ Signed-in students can manage their profile and add ₹2,000 to their wallet at 
 
 On the student dashboard, students can browse mentors who have set a session fee and request a future session. Once a mentor accepts, the user can pay from their Medix wallet; the fee is credited to the mentor's in-app Medix wallet, and chat becomes available to both participants. Session wallet transfers use MongoDB transactions, so use MongoDB Atlas or a local replica set. This feature credits the mentor's in-app balance and does not automatically pay out to a bank account or UPI ID.
 
+Paid sessions also support mentor-initiated video calls. Mentors can share their screen and open a collaborative ZEGOCLOUD Superboard from the video-call toolbar; students can view and collaborate on the board. Add `ZEGO_APP_ID` and `ZEGO_SERVER_SECRET` to `server/.env` using the credentials from your ZEGOCLOUD project; the server secret must be exactly 32 bytes. Keep it on the backend—do not add it to a `VITE_` variable or expose it in the client. Superboard is disabled by default for ZEGOCLOUD projects; contact ZEGOCLOUD support to enable the service.
+
 ## 🎯 Project Objective
 
 To develop a mentorship platform with dedicated mentor and student workflows, secure authentication, and real-time communication capabilities.

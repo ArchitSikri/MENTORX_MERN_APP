@@ -13,6 +13,7 @@ import UserMain from './pages/UserMain.jsx'
 import UserProfile from './pages/UserProfile.jsx'
 import MentorMain from './pages/MentorMain.jsx'
 import ChatPage from './pages/ChatPage.jsx'
+import VideoCallPage from './pages/VideoCallPage.jsx'
 import UserContext from './context/UserContext.jsx'
 import MentorContext from './context/MentorContext.jsx'
 import { MentorDataContext } from './context/MentorDataContext.js'
@@ -89,6 +90,14 @@ function AnimatedRoutes() {
         <Route
           path="/mentor/chat/:appointmentId"
           element={<AuthGuard audience="mentor"><ChatPage role="mentor" /></AuthGuard>}
+        />
+        <Route
+          path="/student/video-call/:appointmentId/:callId"
+          element={<AuthGuard audience="student"><VideoCallPage role="user" /></AuthGuard>}
+        />
+        <Route
+          path="/mentor/video-call/:appointmentId/:callId"
+          element={<AuthGuard audience="mentor"><VideoCallPage role="mentor" /></AuthGuard>}
         />
 
         <Route path="*" element={<Navigate to="/" replace />} />

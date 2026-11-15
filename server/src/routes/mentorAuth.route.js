@@ -14,6 +14,10 @@ import {
     listMentorAppointments,
     listAppointmentMessages,
     sendAppointmentMessage,
+    createAppointmentVideoCall,
+    getAppointmentVideoCall,
+    endAppointmentVideoCall,
+    createAppointmentVideoCallToken,
     updateAppointmentStatus,
     updateMentorSessionFee
 } from '../controllers/appointment.controller.js';
@@ -30,6 +34,10 @@ mentorAuthRouter.patch('/appointments/:appointmentId', authMentor, updateAppoint
 mentorAuthRouter.patch('/profile/session-fee', authMentor, updateMentorSessionFee);
 mentorAuthRouter.get('/appointments/:appointmentId/messages', authMentor, listAppointmentMessages);
 mentorAuthRouter.post('/appointments/:appointmentId/messages', authMentor, sendAppointmentMessage);
+mentorAuthRouter.get('/appointments/:appointmentId/call', authMentor, getAppointmentVideoCall);
+mentorAuthRouter.post('/appointments/:appointmentId/call', authMentor, createAppointmentVideoCall);
+mentorAuthRouter.post('/appointments/:appointmentId/call/:callId/token', authMentor, createAppointmentVideoCallToken);
+mentorAuthRouter.post('/appointments/:appointmentId/call/:callId/end', authMentor, endAppointmentVideoCall);
 mentorAuthRouter.post('/logout', authMentor, logoutMentor);
 mentorAuthRouter.post('/logout-all', authMentor, logoutAllMentorSessions);
 

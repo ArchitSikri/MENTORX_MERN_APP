@@ -18,6 +18,8 @@ const config = {
     GOOGLE_REFRESH_TOKEN: process.env.GOOGLE_REFRESH_TOKEN,
     GOOGLE_USER: process.env.GOOGLE_USER,
     ADMIN_SECRET_KEY: process.env.ADMIN_SECRET_KEY,
+    ZEGO_APP_ID: process.env.ZEGO_APP_ID ? Number(process.env.ZEGO_APP_ID) : null,
+    ZEGO_SERVER_SECRET: process.env.ZEGO_SERVER_SECRET,
 }
 
 export default config;

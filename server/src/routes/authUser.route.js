@@ -20,6 +20,10 @@ import { uploadUserProfilePicture } from '../middleware/multer.middleware.js';
 import {
     listAppointmentMessages,
     createAppointment,
+    getAppointmentVideoCall,
+    respondToAppointmentVideoCall,
+    endAppointmentVideoCall,
+    createAppointmentVideoCallToken,
     listApprovedMentors,
     listUserAppointments,
     payForAppointment,
@@ -38,6 +42,10 @@ authRouter.post('/appointments', authUser, createAppointment);
 authRouter.post('/appointments/:appointmentId/pay', authUser, payForAppointment);
 authRouter.get('/appointments/:appointmentId/messages', authUser, listAppointmentMessages);
 authRouter.post('/appointments/:appointmentId/messages', authUser, sendAppointmentMessage);
+authRouter.get('/appointments/:appointmentId/call', authUser, getAppointmentVideoCall);
+authRouter.patch('/appointments/:appointmentId/call/:callId', authUser, respondToAppointmentVideoCall);
+authRouter.post('/appointments/:appointmentId/call/:callId/token', authUser, createAppointmentVideoCallToken);
+authRouter.post('/appointments/:appointmentId/call/:callId/end', authUser, endAppointmentVideoCall);
 authRouter.get('/profile/:userId', authUser, getUserProfile);
 authRouter.put('/profile/:userId', authUser, uploadUserProfilePicture, updateUserProfile);
 authRouter.post('/wallet/topup/order', authUser, createWalletTopupOrder);
