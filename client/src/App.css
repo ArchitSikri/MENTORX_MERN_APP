@@ -1201,3 +1201,537 @@ html:has(.admin-auth-page)::-webkit-scrollbar-thumb {
     transition-duration: 0.01ms !important;
   }
 }
+
+:root {
+  color-scheme: dark;
+}
+
+body {
+  color: var(--color-ink);
+}
+
+.home-page,
+.auth-page,
+.admin-auth-page,
+.account-page,
+main.min-h-screen.bg-paper {
+  background-color: transparent;
+  background-image:
+    linear-gradient(rgb(95 145 210 / 3%) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(95 145 210 / 3%) 1px, transparent 1px);
+  background-size: 42px 42px;
+}
+
+.site-header {
+  border-color: rgb(108 142 184 / 18%);
+}
+
+.brand-mark {
+  border-color: rgb(85 230 255 / 35%);
+  border-radius: 10px;
+  color: var(--color-accent);
+  box-shadow: inset 0 0 18px rgb(85 230 255 / 8%), 0 0 22px rgb(85 230 255 / 8%);
+}
+
+.brand-name {
+  color: #e8f1ff;
+  font-family: var(--font-display);
+  letter-spacing: -0.07em;
+}
+
+.brand-name > span {
+  color: var(--color-accent);
+}
+
+.header-note,
+.back-link,
+.site-footer {
+  color: #91a0b8;
+}
+
+.home-eyebrow,
+.form-eyebrow,
+.destination-heading {
+  color: var(--color-accent);
+}
+
+.home-intro h1,
+.auth-intro h1 {
+  color: #e8f1ff;
+  font-family: var(--font-display);
+}
+
+.home-intro h1 em,
+.auth-intro h1 em {
+  color: #55e6ff;
+  text-shadow: 0 0 36px rgb(85 230 255 / 19%);
+}
+
+.home-intro > p,
+.auth-intro > p,
+.form-heading > p,
+.destination-detail {
+  color: #a0aec4;
+}
+
+.home-signature,
+.intro-note {
+  color: #8594ae;
+}
+
+.signature-line,
+.intro-rule {
+  background: linear-gradient(90deg, #55e6ff, #8878ff);
+}
+
+.destination-link,
+.destination-link:last-of-type {
+  border-color: rgb(108 142 184 / 20%);
+}
+
+.destination-link:hover {
+  background: rgb(85 230 255 / 5%);
+}
+
+.destination-icon {
+  border-color: rgb(85 230 255 / 25%);
+  color: #55e6ff;
+  background: rgb(85 230 255 / 5%);
+}
+
+.destination-label,
+.destination-copy {
+  color: #e8f1ff;
+}
+
+.destination-index,
+.destination-arrow,
+.footer-location > span {
+  color: #6d7f9b;
+}
+
+.destination-link:hover .destination-arrow,
+.back-link:hover,
+.directory-profile-link:hover,
+.profile-back-link:hover {
+  color: #55e6ff;
+}
+
+.site-footer {
+  border-color: rgb(108 142 184 / 18%);
+}
+
+.auth-layout--doctor-register .auth-intro {
+  z-index: 1;
+}
+
+.intro-kicker,
+.intro-kicker svg {
+  color: #55e6ff;
+}
+
+.auth-form-panel {
+  padding: clamp(22px, 3vw, 36px);
+  border: 1px solid rgb(112 148 196 / 19%);
+  border-radius: 20px;
+  background: linear-gradient(145deg, rgb(17 29 49 / 92%), rgb(10 17 31 / 94%));
+  box-shadow: 0 24px 80px rgb(0 0 0 / 25%), inset 0 1px rgb(255 255 255 / 3%);
+}
+
+.form-heading h2,
+.form-section-heading h3,
+.field,
+.form-switch,
+.account-card,
+.profile-card,
+.chat-heading h1,
+.doctor-directory-heading h2,
+.user-appointments-section h2,
+.doctor-appointments-section h2 {
+  color: #e8f1ff;
+}
+
+.form-section-heading,
+.account-card dl,
+.doctor-directory-details,
+.doctor-booking-form,
+.user-appointment-list,
+.chat-call-panel,
+.profile-recovery {
+  border-color: rgb(108 142 184 / 19%);
+}
+
+.form-section-number,
+.field-icon {
+  color: #55e6ff;
+}
+
+.field-required,
+.field-optional,
+.file-input-copy small,
+.upload-note,
+.form-footnote {
+  color: #8493ad;
+}
+
+.input-wrap,
+.file-input-wrap,
+.bio-input,
+.doctor-booking-form input,
+.mentor-fee-form input,
+.profile-input,
+.chat-compose-form textarea {
+  color: #e8f1ff;
+  border-color: rgb(115 148 190 / 24%);
+  background-color: #0a1425;
+}
+
+.input-wrap:focus-within,
+.bio-input:focus,
+.doctor-booking-form input:focus,
+.profile-input:focus,
+.chat-compose-form textarea:focus {
+  border-color: #55e6ff;
+  background-color: #0b172a;
+  box-shadow: 0 0 0 3px rgb(85 230 255 / 9%);
+}
+
+.input-wrap input,
+.input-wrap input::placeholder,
+.bio-input::placeholder,
+.chat-compose-form textarea::placeholder {
+  color: #8594ad;
+}
+
+.file-input-wrap {
+  background-color: #0b1527;
+}
+
+.file-input-wrap:hover {
+  border-color: #55e6ff;
+  background-color: #0d1a2e;
+}
+
+.file-input-icon,
+.wallet-icon {
+  border-color: rgb(85 230 255 / 25%);
+  color: #55e6ff;
+  background-color: rgb(85 230 255 / 8%);
+}
+
+.file-input-copy {
+  color: #d7e4f7;
+}
+
+.password-toggle {
+  color: #8fa0ba;
+}
+
+.password-toggle:hover {
+  color: #55e6ff;
+}
+
+.submit-button,
+.admin-auth-page button[type="submit"] {
+  color: #04121d;
+  border-color: #55e6ff;
+  border-radius: 9px;
+  background: linear-gradient(105deg, #55e6ff, #66baff);
+  box-shadow: 0 8px 26px rgb(62 183 255 / 15%);
+}
+
+.submit-button:hover,
+.admin-auth-page button[type="submit"]:hover {
+  color: #04121d;
+  border-color: #9af2ff;
+  background: linear-gradient(105deg, #9af2ff, #91cbff);
+  box-shadow: 0 10px 32px rgb(62 183 255 / 24%);
+}
+
+.form-switch,
+.google-auth-divider,
+.google-auth-note {
+  color: #9aa9c0;
+}
+
+.form-switch a,
+.form-footnote a,
+.profile-photo-picker,
+.wallet-recovery summary {
+  color: #55e6ff;
+  text-decoration-color: rgb(85 230 255 / 42%);
+}
+
+.auth-feedback {
+  color: #d7e4f7;
+  border-color: rgb(108 142 184 / 23%);
+  background: #101d31;
+}
+
+.auth-feedback--error {
+  color: #ff9aaf;
+  border-color: rgb(255 115 145 / 32%);
+  background: rgb(86 25 45 / 31%);
+}
+
+.account-page {
+  color: #e8f1ff;
+}
+
+.account-page .site-header {
+  max-width: 1180px;
+}
+
+.account-logout,
+.profile-back-link,
+.directory-profile-link {
+  color: #a6b5cc;
+}
+
+.account-logout {
+  border-color: rgb(108 142 184 / 24%);
+}
+
+.account-logout:hover,
+.profile-recovery-button:hover {
+  border-color: #55e6ff;
+  color: #55e6ff;
+}
+
+.account-card,
+.doctor-directory-card,
+.directory-empty,
+.user-appointment-list,
+.chat-card,
+.video-call-card,
+.profile-card {
+  color: #e8f1ff;
+  border-color: rgb(112 148 196 / 19%);
+  border-radius: 18px;
+  background: linear-gradient(145deg, rgb(17 29 49 / 94%), rgb(10 17 31 / 96%));
+  box-shadow: 0 18px 55px rgb(0 0 0 / 20%), inset 0 1px rgb(255 255 255 / 3%);
+}
+
+.account-card > p,
+.doctor-directory-heading p,
+.doctor-directory-profile p,
+.doctor-directory-bio,
+.user-appointment-row p,
+.mentor-fee-section > p,
+.chat-heading > p,
+.video-call-guidance,
+.profile-page-heading > p,
+.profile-card-heading p,
+.wallet-card > p,
+.account-card dt,
+.doctor-directory-details dt {
+  color: #96a5bd;
+}
+
+.account-card dd,
+.doctor-directory-details dd,
+.doctor-directory-profile h3,
+.user-appointment-row h3,
+.profile-card-heading h2,
+.chat-message-meta strong {
+  color: #e8f1ff;
+}
+
+.doctor-directory-avatar-fallback,
+.profile-avatar {
+  color: #55e6ff;
+  border-color: rgb(85 230 255 / 25%);
+  background: #0b1729;
+}
+
+.appointment-status {
+  background: rgb(122 143 174 / 13%);
+}
+
+.appointment-status--pending {
+  color: #ffd783;
+  background: rgb(220 164 55 / 12%);
+}
+
+.appointment-status--confirmed {
+  color: #70ebba;
+  background: rgb(47 183 133 / 13%);
+}
+
+.appointment-status--rejected {
+  color: #ff9aaf;
+  background: rgb(225 72 109 / 13%);
+}
+
+.appointment-decision {
+  border-color: rgb(112 148 196 / 28%);
+  color: #c3d2e8;
+  background: transparent;
+}
+
+.appointment-decision--confirm {
+  border-color: rgb(85 230 255 / 45%);
+  color: #70e8ff;
+}
+
+.appointment-decision--confirm:hover {
+  color: #04121d;
+  background: #55e6ff;
+}
+
+.appointment-decision--reject:hover {
+  border-color: #ff91a8;
+  color: #ff91a8;
+}
+
+.chat-message-list {
+  color: #e8f1ff;
+  border-color: rgb(112 148 196 / 20%);
+  background: #08111f;
+}
+
+.chat-message {
+  color: #e8f1ff;
+  background: #142239;
+  box-shadow: none;
+}
+
+.chat-message--own {
+  background: #123143;
+}
+
+.chat-message-meta time {
+  color: #8fa0ba;
+}
+
+.wallet-topup-note {
+  color: #a0aec4;
+  border-color: rgb(108 142 184 / 19%);
+  background: #0b1527;
+}
+
+.profile-input-label,
+.mentor-fee-form label,
+.doctor-booking-form label {
+  color: #dce8f8;
+}
+
+.profile-input--readonly {
+  color: #91a0b8;
+}
+
+.admin-auth-page,
+.admin-auth-page section,
+.admin-auth-page footer {
+  color: #e8f1ff;
+  border-color: rgb(108 142 184 / 20%);
+}
+
+.admin-auth-page header,
+.admin-auth-page footer {
+  border-color: rgb(108 142 184 / 20%);
+}
+
+.admin-auth-page form > label > span:nth-child(2) {
+  border-color: rgb(115 148 190 / 24%);
+  background-color: #0a1425;
+}
+
+.admin-auth-page form > label > span:nth-child(2):focus-within {
+  border-color: #55e6ff;
+  background-color: #0b172a;
+  box-shadow: 0 0 0 3px rgb(85 230 255 / 9%);
+}
+
+.admin-auth-page input {
+  color: #e8f1ff;
+}
+
+.admin-auth-page input::placeholder {
+  color: #8594ad;
+}
+
+.admin-auth-page a {
+  text-decoration-color: rgb(85 230 255 / 42%);
+}
+
+.admin-auth-page [class*="text-red-700"] {
+  color: #ff9aaf;
+}
+
+.admin-auth-page [class*="text-green-800"] {
+  color: #70ebba;
+}
+
+main.min-h-screen.bg-paper {
+  color: #e8f1ff;
+}
+
+main.min-h-screen.bg-paper header {
+  border-color: rgb(108 142 184 / 20%);
+}
+
+main.min-h-screen.bg-paper button[aria-pressed],
+main.min-h-screen.bg-paper a.inline-flex,
+main.min-h-screen.bg-paper button[aria-label="Refresh applications"] {
+  border-color: rgb(108 142 184 / 22%);
+  color: #dce8f8;
+  background-color: #101b2e;
+}
+
+main.min-h-screen.bg-paper button[aria-pressed="true"],
+main.min-h-screen.bg-paper button[aria-pressed]:hover,
+main.min-h-screen.bg-paper a.inline-flex:hover,
+main.min-h-screen.bg-paper button[aria-label="Refresh applications"]:hover {
+  border-color: rgb(85 230 255 / 45%);
+  color: #55e6ff;
+  background-color: #12243a;
+}
+
+main.min-h-screen.bg-paper .text-green-800 {
+  color: #70ebba;
+}
+
+main.min-h-screen.bg-paper .text-amber-800 {
+  color: #ffd783;
+}
+
+main.min-h-screen.bg-paper .border-green-800 {
+  border-color: #42c997;
+  background: #1b916c;
+}
+
+main.min-h-screen.bg-paper .border-red-800 {
+  border-color: rgb(255 145 168 / 50%);
+  color: #ff91a8;
+  background: transparent;
+}
+
+main.min-h-screen.bg-paper .border-red-800:hover {
+  background: rgb(225 72 109 / 13%);
+}
+
+@media (max-width: 640px) {
+  .auth-form-panel {
+    padding: 21px 17px;
+    border-radius: 15px;
+  }
+
+  .home-page,
+  .auth-page,
+  .admin-auth-page,
+  .account-page,
+  main.min-h-screen.bg-paper {
+    background-size: 32px 32px;
+  }
+
+  .account-card,
+  .doctor-directory-card,
+  .directory-empty,
+  .user-appointment-list,
+  .chat-card,
+  .video-call-card,
+  .profile-card {
+    border-radius: 14px;
+  }
+}

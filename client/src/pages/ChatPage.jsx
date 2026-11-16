@@ -204,7 +204,7 @@ export default function ChatPage({ role }) {
       <section className="chat-card" aria-labelledby="chat-title">
         <div className="chat-heading">
           <span className="form-eyebrow">PAID MENTORSHIP SESSION</span>
-          <h1 id="chat-title">Chat with {role === 'mentor' ? 'student' : 'mentor'}</h1>
+          <h1 id="chat-title">Chat with {role === 'mentor' ? 'builder' : 'mentor'}</h1>
           <p>Messages are available to the participants of this paid session.</p>
         </div>
         <section className="chat-call-panel" aria-label="Video call">
@@ -244,7 +244,7 @@ export default function ChatPage({ role }) {
           )}
           {call?.status === 'PENDING' && role === 'mentor' && (
             <div className="chat-incoming-call">
-              <p>Waiting for the student to accept your video call.</p>
+              <p>Waiting for the builder to accept your video call.</p>
               <Link className="appointment-decision appointment-decision--confirm" to={getVideoCallPath()}>
                 Return to call
               </Link>

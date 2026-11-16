@@ -133,13 +133,13 @@ export default function UserProfile() {
         amount: order.amount,
         currency: order.currency,
         order_id: order.orderId,
-        name: 'Medix',
+        name: 'MentorX',
         description: 'Wallet top-up',
         prefill: {
           name: profile?.username || '',
           email: profile?.email || ''
         },
-        theme: { color: '#ad3e43' },
+        theme: { color: '#55e6ff' },
         handler: async (payment) => {
           try {
             const result = await authenticatedRequest('/api/user/auth/wallet/topup/verify', {
@@ -279,7 +279,7 @@ export default function UserProfile() {
 
             <section className="profile-card wallet-card">
               <div className="wallet-icon"><Wallet size={22} aria-hidden="true" /></div>
-              <span className="form-eyebrow">MEDIX WALLET</span>
+              <span className="form-eyebrow">MENTORX WALLET</span>
               <h2>₹{(Number(profile.wallet) || 0).toLocaleString('en-IN')}</h2>
               <p>Available wallet balance</p>
               <div className="wallet-topup-note">Add ₹2,000 securely using Razorpay.</div>

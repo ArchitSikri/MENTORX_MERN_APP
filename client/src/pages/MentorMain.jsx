@@ -146,18 +146,18 @@ export default function MentorMain() {
       <section className="account-card">
         <span className="form-eyebrow">MENTOR ACCOUNT</span>
         <h1>Welcome, {mentor?.username || 'there'}.</h1>
-        <p>You’re signed in to your Medix mentor account.</p>
+        <p>You’re signed in to your MentorX mentor account.</p>
         <dl>
           <div><dt>Email</dt><dd>{mentor?.email}</dd></div>
           <div><dt>Mentor ID</dt><dd>{mentor?.mentorId}</dd></div>
           {mentor?.expertise && <div><dt>Area of expertise</dt><dd>{mentor.expertise}</dd></div>}
           <div><dt>Account status</dt><dd>{mentor?.status}</dd></div>
-          <div><dt>Medix wallet</dt><dd>₹{walletBalance.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</dd></div>
+          <div><dt>MentorX wallet</dt><dd>₹{walletBalance.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</dd></div>
         </dl>
       </section>
       <section className="doctor-appointments-section mentor-fee-section">
         <h2>Session fee</h2>
-        <p>Set the amount students pay when you accept a session request.</p>
+        <p>Set the amount builders pay when you accept a session request.</p>
         {message && <p className="auth-feedback" role="status">{message}</p>}
         <form className="mentor-fee-form" onSubmit={handleSaveSessionFee}>
           <label htmlFor="mentor-session-fee">Fee per session (₹)</label>
@@ -181,7 +181,7 @@ export default function MentorMain() {
         </form>
       </section>
       <section className="doctor-appointments-section" aria-labelledby="mentor-sessions-title">
-        <span className="form-eyebrow">STUDENT REQUESTS</span>
+        <span className="form-eyebrow">BUILDER REQUESTS</span>
         <h2 id="mentor-sessions-title">Mentorship session requests</h2>
         {error && <p className="auth-feedback auth-feedback--error" role="alert">{error}</p>}
         {isLoadingSessions ? (
@@ -193,7 +193,7 @@ export default function MentorMain() {
             {sessions.map((session) => (
               <article className="user-appointment-row doctor-appointment-row" key={session._id}>
                 <div>
-                  <h3>{session.user?.username || 'Student'}</h3>
+                  <h3>{session.user?.username || 'Builder'}</h3>
                   <p>{session.user?.email} · {formatSessionDate(session.scheduledAt)}</p>
                   {session.reason && <p>Note: {session.reason}</p>}
                   {session.status === 'CONFIRMED' && (
@@ -229,7 +229,7 @@ export default function MentorMain() {
                   )}
                   {session.status === 'CONFIRMED' && session.paymentStatus === 'PAID' && (
                     <Link className="appointment-decision appointment-decision--confirm" to={`/mentor/chat/${session._id}`}>
-                      Chat with student
+                      Chat with builder
                     </Link>
                   )}
                 </div>

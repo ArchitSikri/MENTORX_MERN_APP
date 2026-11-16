@@ -173,7 +173,7 @@ export default function VideoCallPage({ role }) {
 
   const statusText = {
     loading: 'Checking call invitation…',
-    waiting: 'Waiting for the student to accept the call…',
+    waiting: 'Waiting for the builder to accept the call…',
     joining: 'Connecting to the video call…',
     'in-call': 'You are in the call.',
     ended: 'This video call has ended.',
@@ -191,7 +191,7 @@ export default function VideoCallPage({ role }) {
       </header>
       <section className="video-call-card" aria-labelledby="video-call-title">
         <div className="chat-heading">
-          <span className="form-eyebrow">MEDIX VIDEO SESSION</span>
+          <span className="form-eyebrow">MENTORX VIDEO SESSION</span>
           <h1 id="video-call-title">Mentorship call</h1>
           <p aria-live="polite">{statusText}</p>
         </div>

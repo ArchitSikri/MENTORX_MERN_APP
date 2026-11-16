@@ -2,6 +2,7 @@ import { useState } from 'react'
 import {
   ArrowLeft,
   ArrowRight,
+  Code2,
   Eye,
   EyeOff,
   KeyRound,
@@ -16,12 +17,12 @@ const API_BASE_URL = (import.meta.env.VITE_API_URL ?? '').replace(/\/$/, '')
 
 function AdminBrand() {
   return (
-    <Link className="inline-flex items-center gap-2.5 no-underline" to="/" aria-label="Medix home">
-      <span className="grid size-[34px] place-items-center rounded-full border border-[#e7d7d4] text-[19px] text-accent">
-        <i className="ri-heart-pulse-line" aria-hidden="true" />
+    <Link className="inline-flex items-center gap-2.5 no-underline" to="/" aria-label="MentorX home">
+      <span className="grid size-[34px] place-items-center rounded-full border border-line text-[19px] text-accent">
+        <Code2 size={18} aria-hidden="true" />
       </span>
       <span className="text-[22px] font-semibold tracking-[-1.2px] text-ink">
-        medix<span className="text-accent">.</span>
+        Mentor<span className="text-accent">X</span>
       </span>
     </Link>
   )
@@ -157,19 +158,19 @@ export default function AdminAuthPage({ mode }) {
         <section className="hidden pb-3 lg:block">
           <span className="inline-flex items-center gap-2 text-[11px] font-medium tracking-[0.05em] text-accent">
             <ShieldCheck size={16} strokeWidth={1.7} aria-hidden="true" />
-            Medix administration
+            MentorX administration
           </span>
           <h1 className="mt-7 mb-5 font-display text-[clamp(48px,5vw,66px)] font-medium leading-[1.13] tracking-[-0.055em] text-ink">
-            Care, guided
+            Teams, guided
             <br />
             <em className="font-medium text-accent">with purpose.</em>
           </h1>
           <p className="m-0 max-w-[350px] text-sm leading-[1.9] text-muted">
-            A dedicated space for the people who help keep care thoughtful, trusted, and connected.
+            A dedicated space for the people who keep our learning community thoughtful, trusted, and growing.
           </p>
           <div className="mt-10 h-px w-[43px] bg-rose" />
           <span className="mt-4 block font-display text-xs italic text-[#938b85]">
-            A little more care, in every connection.
+            Better builders start with better guidance.
           </span>
         </section>
 
@@ -252,14 +253,14 @@ export default function AdminAuthPage({ mode }) {
             </Link>
           </p>
           <p className="mt-5 text-center text-[9px] leading-[1.7] text-[#99928b]">
-            Administrator access is intended for authorized Medix staff only.
+            Administrator access is intended for authorized MentorX staff only.
           </p>
         </section>
       </div>
 
       <footer className="mx-auto flex min-h-[42px] w-full max-w-[1180px] shrink-0 items-center justify-between gap-3 border-t border-line text-[10px] text-[#928b84]">
-        <span>© {new Date().getFullYear()} Medix Health</span>
-        <span>Private. Trusted. Thoughtful.</span>
+        <span>© {new Date().getFullYear()} MentorX</span>
+        <span>Curious. Connected. Growing.</span>
       </footer>
     </main>
   )

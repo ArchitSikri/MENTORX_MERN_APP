@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { io } from 'socket.io-client'
-import { Check, FileText, LogOut, RefreshCw, ShieldCheck, X } from 'lucide-react'
+import { Check, Code2, FileText, LogOut, RefreshCw, ShieldCheck, X } from 'lucide-react'
 import { Link, useNavigate } from 'react-router-dom'
 
 const API_BASE_URL = (import.meta.env.VITE_API_URL ?? '').replace(/\/$/, '')
@@ -125,7 +125,7 @@ export default function AdminMain() {
     <main className="min-h-screen bg-paper px-5 text-ink sm:px-8">
       <header className="mx-auto flex h-[68px] max-w-[1180px] items-center justify-between border-b border-line">
         <Link className="text-xl font-semibold text-ink no-underline" to="/">
-          medix<span className="text-accent">.</span>
+          <><Code2 className="mr-2 inline-block" size={18} aria-hidden="true" />Mentor<span className="text-accent">X</span></>
         </Link>
         <button
           className="inline-flex items-center gap-2 border-0 bg-transparent text-xs text-muted hover:text-accent disabled:opacity-60"
@@ -141,7 +141,7 @@ export default function AdminMain() {
         <div className="mb-7 flex flex-wrap items-end justify-between gap-4">
           <div>
             <p className="mb-3 inline-flex items-center gap-2 text-[11px] font-medium tracking-[0.08em] text-accent">
-              <ShieldCheck size={16} aria-hidden="true" /> MEDIX ADMINISTRATION
+              <ShieldCheck size={16} aria-hidden="true" /> MENTORX ADMINISTRATION
             </p>
             <h1 className="mb-1 font-display text-3xl font-medium text-ink">Mentor applications</h1>
             <p className="m-0 text-sm text-muted">Review mentor IDs and verification documents.</p>

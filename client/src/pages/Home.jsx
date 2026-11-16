@@ -1,29 +1,29 @@
-import { ArrowUpRight, GraduationCap, UserRound } from 'lucide-react'
+import { ArrowUpRight, Code2, GraduationCap, UserRound } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { Brand } from '../components/AuthPage.jsx'
 
 const destinations = [
   {
-    label: 'Register as a mentor',
-    detail: 'Share your knowledge and experience',
+    label: 'Join as a mentor',
+    detail: 'Share your craft and experience',
     path: '/mentor/register',
     icon: GraduationCap
   },
   {
-    label: 'Login as a mentor',
-    detail: 'Continue mentoring students',
+    label: 'Mentor sign in',
+    detail: 'Keep guiding the next generation',
     path: '/mentor/login',
     icon: GraduationCap
   },
   {
-    label: 'Register as a student',
-    detail: 'Start learning with a mentor',
+    label: 'Join as a builder',
+    detail: 'Learn by building with a mentor',
     path: '/student/register',
     icon: UserRound
   },
   {
-    label: 'Login as a student',
-    detail: 'Continue your learning journey',
+    label: 'Builder sign in',
+    detail: 'Pick up where your next idea left off',
     path: '/student/login',
     icon: UserRound
   }
@@ -35,31 +35,31 @@ export default function Home() {
       <header className="site-header">
         <Brand />
         <span className="header-note">
-          <i className="ri-heart-pulse-line" aria-hidden="true" />
-          Learn, grow, connect.
+          <Code2 size={16} aria-hidden="true" />
+          Think. Build. Level up.
         </span>
       </header>
 
       <section className="home-content">
         <div className="home-intro">
-          <span className="home-eyebrow">A BETTER WAY TO LEARN TOGETHER</span>
+          <span className="home-eyebrow">YOUR NEXT BIG IDEA STARTS HERE</span>
           <h1>
-            Your future,
+            Build what’s
             <br />
-            <em>guided by mentors.</em>
+            <em>next, together.</em>
           </h1>
           <p>
-            A community for students seeking guidance and mentors ready to share what they know.
+            Find your people, sharpen your skills, and turn ambitious ideas into things that work.
           </p>
           <div className="home-signature">
             <span className="signature-line" />
-            <span>Your journey begins here</span>
+            <span>Make progress, one project at a time</span>
           </div>
         </div>
 
         <nav className="destination-list" aria-label="Choose your account">
           <div className="destination-heading">
-            <span>WELCOME TO MEDIX</span>
+            <span>WELCOME TO MENTORX</span>
             <span>01 — 04</span>
           </div>
           {destinations.map(({ label, detail, path, icon: Icon }, index) => (
@@ -79,9 +79,9 @@ export default function Home() {
       </section>
 
       <footer className="site-footer">
-        <span>© {new Date().getFullYear()} Medix</span>
-        <span>Guidance. Growth. Human connection.</span>
-        <span className="footer-location">Learn together <span aria-hidden="true">·</span> Grow together</span>
+        <span>© {new Date().getFullYear()} MentorX</span>
+        <span>Curiosity. Craft. Community.</span>
+        <span className="footer-location">Dream it <span aria-hidden="true">·</span> Build it</span>
       </footer>
     </main>
   )

@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from 'react'
-import { ArrowLeft, ArrowRight, Eye, EyeOff, FileUp, GraduationCap, LockKeyhole, Mail, UserRound, Wallet } from 'lucide-react'
+import { ArrowLeft, ArrowRight, Code2, Eye, EyeOff, FileUp, GraduationCap, LockKeyhole, Mail, UserRound, Wallet } from 'lucide-react'
 import { Link, useNavigate } from 'react-router-dom'
 import { GoogleLogin } from '@react-oauth/google'
 import { MentorDataContext } from '../context/MentorDataContext.js'
@@ -7,11 +7,11 @@ import { UserDataContext } from '../context/UserDataContext.js'
 
 function Brand() {
   return (
-    <Link className="brand" to="/" aria-label="Medix home">
+    <Link className="brand" to="/" aria-label="MentorX home">
       <span className="brand-mark" aria-hidden="true">
-        <i className="ri-heart-pulse-line" />
+        <Code2 size={18} strokeWidth={2} />
       </span>
-      <span className="brand-name">medix<span>.</span></span>
+      <span className="brand-name">Mentor<span>X</span></span>
     </Link>
   )
 }
@@ -118,11 +118,11 @@ export default function AuthPage({ audience, mode }) {
   const isRegister = mode === 'register'
   const isMentorRegistration = isMentor && isRegister
   const showGoogleAuth = !isMentor && stage === 'form'
-  const audienceLabel = isMentor ? 'Mentor' : 'Student'
+  const audienceLabel = isMentor ? 'Mentor' : 'Builder'
   const pageTitle = isRegister ? 'Create your account' : 'Welcome back'
   const pageDescription = isRegister
     ? 'A few details are all we need to get you started.'
-    : 'Sign in to continue to your Medix account.'
+    : 'Sign in to continue to your MentorX account.'
   const alternatePath = isMentor
     ? (isRegister ? '/mentor/login' : '/mentor/register')
     : (isRegister ? '/student/login' : '/student/register')
@@ -212,22 +212,21 @@ export default function AuthPage({ audience, mode }) {
             <span>{audienceLabel}</span>
           </div>
           <h1>
-            Guidance that feels
+            Big ideas move
             <br />
-            <em>closer.</em>
+            <em>with a guide.</em>
           </h1>
           <p>
-            Learning grows through a more human connection.
-            We’re glad you’re here.
+            Learn new tools, solve real problems, and build confidence alongside someone who’s been there.
           </p>
           <div className="intro-rule" />
-          <span className="intro-note">A little more guidance, in every connection.</span>
+          <span className="intro-note">Good questions lead to great builds.</span>
         </section>
 
         <section className={`auth-form-panel${isMentorRegistration ? ' auth-form-panel--doctor' : ''}`} aria-labelledby="form-title">
           <div className="form-heading">
             <span className="form-eyebrow">
-              {isMentorRegistration ? 'MENTOR REGISTRATION' : isRegister ? 'STUDENT REGISTRATION' : 'YOUR ACCOUNT'}
+              {isMentorRegistration ? 'MENTOR REGISTRATION' : isRegister ? 'BUILDER REGISTRATION' : 'YOUR ACCOUNT'}
             </span>
             <h2 id="form-title">
               {stage === 'verify'
@@ -475,7 +474,7 @@ export default function AuthPage({ audience, mode }) {
           {stage !== 'verified' && (
             <>
               <p className="form-switch">
-                {isRegister ? 'Already have an account?' : 'New to Medix?'}
+                {isRegister ? 'Already have an account?' : 'New to MentorX?'}
                 {' '}
                 <Link to={alternatePath}>{isRegister ? 'Sign in' : 'Create an account'}</Link>
               </p>
@@ -488,8 +487,8 @@ export default function AuthPage({ audience, mode }) {
       </div>
 
       <footer className="site-footer auth-footer">
-        <span>© {new Date().getFullYear()} Medix</span>
-        <span>Here for your growth.</span>
+        <span>© {new Date().getFullYear()} MentorX</span>
+        <span>Built for your next chapter.</span>
       </footer>
     </main>
   )

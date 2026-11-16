@@ -156,9 +156,9 @@ export default function UserMain() {
       </header>
 
       <section className="account-card user-welcome-card">
-        <span className="form-eyebrow">STUDENT ACCOUNT</span>
+        <span className="form-eyebrow">BUILDER ACCOUNT</span>
         <h1>Welcome, {user?.username || 'there'}.</h1>
-        <p>You’re signed in to your Medix account.</p>
+        <p>You’re signed in to your MentorX account.</p>
         <dl>
           <div><dt>Email</dt><dd>{user?.email}</dd></div>
           <div><dt>Wallet balance</dt><dd>₹{(Number(user?.wallet) || 0).toLocaleString('en-IN')}</dd></div>
@@ -168,9 +168,9 @@ export default function UserMain() {
       <section className="doctor-directory" aria-labelledby="mentor-directory-title">
         <div className="doctor-directory-heading">
           <div>
-            <span className="form-eyebrow">MEDIX MENTORS</span>
+            <span className="form-eyebrow">MENTORX COMMUNITY</span>
             <h2 id="mentor-directory-title">Find a mentor</h2>
-            <p>Browse verified mentors and request a mentorship session.</p>
+            <p>Meet experienced mentors and book a focused, one-to-one session.</p>
           </div>
           <Link className="directory-profile-link" to={`/student/profile/${user?.id}`}>
             <span>Manage profile</span><ArrowRight size={16} aria-hidden="true" />

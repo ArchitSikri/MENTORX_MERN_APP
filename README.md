@@ -1,15 +1,15 @@
-MENTORX
+# MentorX
 
 
-A full-stack student mentorship platform built using the MERN stack, designed to connect students with verified mentors.
+A full-stack mentorship platform for builders, learners, and engineers, built with the MERN stack. MentorX connects people developing their technical skills with experienced, verified mentors.
 
 ## 🚀 Features
 
-- **Mentor Registration & Login** – Mentor profiles include a mentor ID, optional UPI ID, Aadhaar card, and qualification certificate. Email verification and admin approval are required before sign-in.
-- **Student Registration & Login** – Students can create accounts and securely log in.
-- **Mentor Directory & Sessions** – Students can request sessions with verified, admin-approved mentors; mentors can accept or decline requests.
-- **Role-Based Access** – Separate authentication flows for mentors and students.
-- **Responsive UI** – Minimal and aesthetic interface with a clean design.
+- **Mentor Registration & Login** – Mentor profiles include a mentor ID, optional UPI ID, identity document, and qualification certificate. Email verification and admin approval are required before sign-in.
+- **Builder Registration & Login** – Builders can create accounts and securely log in.
+- **Mentor Directory & Sessions** – Builders can request sessions with verified, admin-approved mentors; mentors can accept or decline requests.
+- **Role-Based Access** – Separate authentication flows for mentors and builders.
+- **Responsive UI** – A dark, engineering-inspired interface with electric-blue and neon accents.
 - **Secure Authentication** – Protected routes and authenticated user sessions.
 - **Real-Time Communication** – Socket.IO integration for real-time functionality.
 
@@ -37,7 +37,7 @@ A full-stack student mentorship platform built using the MERN stack, designed to
 ## 📁 Project Structure
 
 ```text
-DR-CONSULTANCY/
+MENTORX/
 │
 ├── client/
 │   ├── src/
@@ -66,7 +66,7 @@ DR-CONSULTANCY/
 
 ```bash
 git clone YOUR_REPOSITORY_URL
-cd DR-CONSULTANCY
+cd your-cloned-repository
 ```
 
 ### 2. Setup Backend
@@ -113,15 +113,15 @@ RAZORPAY_KEY_SECRET=your_razorpay_test_key_secret
 
 The secret is only used by the backend. Wallet top-ups accept only Razorpay test-mode key IDs (`rzp_test_`); live-mode keys are rejected.
 
-Signed-in students can manage their profile and add ₹2,000 to their wallet at `/student/profile/:userId`. The wallet is credited only after the backend verifies the Razorpay order, signature, and captured payment.
+Signed-in builders can manage their profile and add ₹2,000 to their wallet at `/student/profile/:userId`. The wallet is credited only after the backend verifies the Razorpay order, signature, and captured payment.
 
-On the student dashboard, students can browse mentors who have set a session fee and request a future session. Once a mentor accepts, the user can pay from their Medix wallet; the fee is credited to the mentor's in-app Medix wallet, and chat becomes available to both participants. Session wallet transfers use MongoDB transactions, so use MongoDB Atlas or a local replica set. This feature credits the mentor's in-app balance and does not automatically pay out to a bank account or UPI ID.
+On the builder dashboard, builders can browse mentors who have set a session fee and request a future session. Once a mentor accepts, the builder can pay from their MentorX wallet; the fee is credited to the mentor's in-app wallet, and chat becomes available to both participants. Session wallet transfers use MongoDB transactions, so use MongoDB Atlas or a local replica set. This feature credits the mentor's in-app balance and does not automatically pay out to a bank account or UPI ID.
 
-Paid sessions also support mentor-initiated video calls. Mentors can share their screen and open a collaborative ZEGOCLOUD Superboard from the video-call toolbar; students can view and collaborate on the board. Add `ZEGO_APP_ID` and `ZEGO_SERVER_SECRET` to `server/.env` using the credentials from your ZEGOCLOUD project; the server secret must be exactly 32 bytes. Keep it on the backend—do not add it to a `VITE_` variable or expose it in the client. Superboard is disabled by default for ZEGOCLOUD projects; contact ZEGOCLOUD support to enable the service.
+Paid sessions also support mentor-initiated video calls. Mentors can share their screen and open a collaborative ZEGOCLOUD Superboard from the video-call toolbar; builders can view and collaborate on the board. Add `ZEGO_APP_ID` and `ZEGO_SERVER_SECRET` to `server/.env` using the credentials from your ZEGOCLOUD project; the server secret must be exactly 32 bytes. Keep it on the backend—do not add it to a `VITE_` variable or expose it in the client. Superboard is disabled by default for ZEGOCLOUD projects; contact ZEGOCLOUD support to enable the service.
 
 ## 🎯 Project Objective
 
-To develop a mentorship platform with dedicated mentor and student workflows, secure authentication, and real-time communication capabilities.
+To help aspiring engineers and builders grow through trusted mentorship, secure collaboration, and real-time communication.
 
 ## 👨‍💻 Developer
 
