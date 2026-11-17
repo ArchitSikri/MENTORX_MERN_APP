@@ -1,20 +1,28 @@
 import { useCallback, useContext, useEffect, useRef, useState } from 'react'
-import { ArrowLeft, PhoneCall, Send, Video } from 'lucide-react'
+import { ArrowLeft, ImagePlus, PhoneCall, Send, Video, X } from 'lucide-react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { Brand } from '../components/AuthPage.jsx'
 import { MentorDataContext } from '../context/MentorDataContext.js'
 import { UserDataContext } from '../context/UserDataContext.js'
 
 const API_BASE_URL = (import.meta.env.VITE_API_URL ?? '').replace(/\/$/, '')
+const allowedImageTypes = new Set([
+  'image/jpeg',
+  'image/png',
+  'image/gif',
+  'image/webp',
+  'image/bmp'
+])
 
 async function request(path, { method = 'GET', body, token } = {}) {
+  const isFormData = body instanceof FormData
   const response = await fetch(`${API_BASE_URL}${path}`, {
     method,
     headers: {
       Authorization: `Bearer ${token}`,
-      ...(body ? { 'Content-Type': 'application/json' } : {})
+      ...(body && !isFormData ? { 'Content-Type': 'application/json' } : {})
     },
-    body: body ? JSON.stringify(body) : undefined,
+    body: body ? (isFormData ? body : JSON.stringify(body)) : undefined,
     credentials: 'include'
   })
   const result = await response.json().catch(() => ({}))
@@ -49,12 +57,16 @@ export default function ChatPage({ role }) {
   const [messages, setMessages] = useState([])
   const [call, setCall] = useState(null)
   const [draft, setDraft] = useState('')
+  const [selectedImage, setSelectedImage] = useState(null)
+  const [imagePreview, setImagePreview] = useState('')
   const [error, setError] = useState('')
   const [isLoading, setIsLoading] = useState(true)
   const [isSending, setIsSending] = useState(false)
   const [isCalling, setIsCalling] = useState(false)
   const [callResponse, setCallResponse] = useState('')
   const messageListRef = useRef(null)
+  const imageInputRef = useRef(null)
+  const imagePreviewUrlRef = useRef('')
   const authPath = role === 'mentor' ? '/api/mentor/auth' : '/api/user/auth'
   const backPath = role === 'mentor' ? '/mentor/dashboard' : '/student/dashboard'
   const ownId = role === 'mentor' ? auth.mentor?.id : auth.user?.id
@@ -123,9 +135,48 @@ export default function ChatPage({ role }) {
     if (list) list.scrollTop = list.scrollHeight
   }, [messages])
 
+  useEffect(() => () => {
+    if (imagePreviewUrlRef.current) URL.revokeObjectURL(imagePreviewUrlRef.current)
+  }, [])
+
+  function handleImageSelection(event) {
+    const file = event.target.files?.[0]
+    if (!file) return
+
+    if (!allowedImageTypes.has(file.type)) {
+      setError('Choose a JPG, PNG, GIF, WEBP, or BMP image.')
+      event.target.value = ''
+      return
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      setError('Images must be 5 MB or smaller.')
+      event.target.value = ''
+      return
+    }
+
+    setError('')
+    if (imagePreviewUrlRef.current) URL.revokeObjectURL(imagePreviewUrlRef.current)
+    imagePreviewUrlRef.current = URL.createObjectURL(file)
+    setImagePreview(imagePreviewUrlRef.current)
+    setSelectedImage(file)
+  }
+
+  function removeSelectedImage() {
+    if (imagePreviewUrlRef.current) URL.revokeObjectURL(imagePreviewUrlRef.current)
+    imagePreviewUrlRef.current = ''
+    setImagePreview('')
+    setSelectedImage(null)
+    if (imageInputRef.current) imageInputRef.current.value = ''
+  }
+
   async function handleSubmit(event) {
     event.preventDefault()
-    if (!draft.trim()) return
+    const text = draft.trim()
+    if (!text && !selectedImage) return
+
+    const body = new FormData()
+    if (text) body.append('text', text)
+    if (selectedImage) body.append('image', selectedImage)
 
     setError('')
     setIsSending(true)
@@ -134,12 +185,13 @@ export default function ChatPage({ role }) {
         `${authPath}/appointments/${appointmentId}/messages`,
         {
           method: 'POST',
-          body: { text: draft },
+          body,
           token: auth.accessToken
         },
         auth.refreshSession
       )
       setDraft('')
+      removeSelectedImage()
       await loadMessages()
     } catch (requestError) {
       setError(requestError.message)
@@ -275,10 +327,34 @@ export default function ChatPage({ role }) {
                 <strong>{message.senderName}</strong>
                 <time dateTime={message.createdAt}>{formatMessageTime(message.createdAt)}</time>
               </div>
-              <p>{message.text}</p>
+              {message.text && <p>{message.text}</p>}
+              {message.imageUrl && (
+                <a className="chat-message-image-link" href={message.imageUrl} rel="noreferrer" target="_blank">
+                  <img
+                    alt={message.text ? 'Image attached to message' : 'Image sent in chat'}
+                    className="chat-message-image"
+                    loading="lazy"
+                    src={message.imageUrl}
+                  />
+                </a>
+              )}
             </article>
           ))}
         </div>
+        {selectedImage && (
+          <div className="chat-image-preview">
+            <img alt="Selected image preview" src={imagePreview} />
+            <span>{selectedImage.name}</span>
+            <button
+              aria-label="Remove selected image"
+              disabled={isSending}
+              onClick={removeSelectedImage}
+              type="button"
+            >
+              <X size={15} aria-hidden="true" />
+            </button>
+          </div>
+        )}
         <form className="chat-compose-form" onSubmit={handleSubmit}>
           <label className="sr-only" htmlFor="chat-message">Message</label>
           <textarea
@@ -286,11 +362,26 @@ export default function ChatPage({ role }) {
             maxLength={2000}
             onChange={(event) => setDraft(event.target.value)}
             placeholder="Write a message…"
-            required
             rows={2}
             value={draft}
           />
-          <button className="submit-button" disabled={isSending || !draft.trim()} type="submit">
+          <input
+            accept="image/jpeg,image/png,image/gif,image/webp,image/bmp"
+            className="sr-only"
+            onChange={handleImageSelection}
+            ref={imageInputRef}
+            type="file"
+          />
+          <button
+            aria-label="Attach an image"
+            className="chat-image-button"
+            disabled={isSending}
+            onClick={() => imageInputRef.current?.click()}
+            type="button"
+          >
+            <ImagePlus size={18} aria-hidden="true" />
+          </button>
+          <button className="submit-button" disabled={isSending || (!draft.trim() && !selectedImage)} type="submit">
             <span>{isSending ? 'Sending…' : 'Send'}</span>
             <Send size={16} aria-hidden="true" />
           </button>

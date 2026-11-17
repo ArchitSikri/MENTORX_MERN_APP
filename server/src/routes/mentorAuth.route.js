@@ -9,7 +9,7 @@ import {
     verifyMentorEmail
 } from '../controllers/mentorAuth.controller.js';
 import { authMentor } from '../middleware/authMiddleware.js';
-import { uploadMentorDocuments } from '../middleware/multer.middleware.js';
+import { uploadChatImage, uploadMentorDocuments } from '../middleware/multer.middleware.js';
 import {
     listMentorAppointments,
     listAppointmentMessages,
@@ -33,7 +33,7 @@ mentorAuthRouter.get('/appointments', authMentor, listMentorAppointments);
 mentorAuthRouter.patch('/appointments/:appointmentId', authMentor, updateAppointmentStatus);
 mentorAuthRouter.patch('/profile/session-fee', authMentor, updateMentorSessionFee);
 mentorAuthRouter.get('/appointments/:appointmentId/messages', authMentor, listAppointmentMessages);
-mentorAuthRouter.post('/appointments/:appointmentId/messages', authMentor, sendAppointmentMessage);
+mentorAuthRouter.post('/appointments/:appointmentId/messages', authMentor, uploadChatImage, sendAppointmentMessage);
 mentorAuthRouter.get('/appointments/:appointmentId/call', authMentor, getAppointmentVideoCall);
 mentorAuthRouter.post('/appointments/:appointmentId/call', authMentor, createAppointmentVideoCall);
 mentorAuthRouter.post('/appointments/:appointmentId/call/:callId/token', authMentor, createAppointmentVideoCallToken);

@@ -8,6 +8,7 @@ import VideoCall from '../models/videoCall.model.js';
 import config from '../config/config.js';
 import { generateZegoToken } from '../utils/zegoToken.js';
 import { randomUUID } from 'node:crypto';
+import { deleteFile, uploadFile } from '../services/imagekit.service.js';
 
 const VIDEO_CALL_INVITE_TTL_MS = 2 * 60 * 1000;
 const VIDEO_CALL_MAX_DURATION_MS = 60 * 60 * 1000;
@@ -350,18 +351,62 @@ export async function sendAppointmentMessage(req, res) {
     if (!appointment) return;
 
     const { text } = req.body ?? {};
-    if (typeof text !== 'string' || !text.trim() || text.trim().length > 2000) {
-        return res.status(400).json({ message: 'Message must contain 1 to 2,000 characters' });
+    if (text != null && typeof text !== 'string') {
+        return res.status(400).json({ message: 'Message text must be plain text' });
+    }
+    const trimmedText = typeof text === 'string' ? text.trim() : '';
+    if (trimmedText.length > 2000) {
+        return res.status(400).json({ message: 'Message cannot exceed 2,000 characters' });
+    }
+    if (!trimmedText && !req.file) {
+        return res.status(400).json({ message: 'Write a message or attach an image' });
     }
 
     const isUser = Boolean(req.user);
-    const message = await ChatMessage.create({
-        appointment: appointment._id,
-        senderType: isUser ? 'user' : 'mentor',
-        senderId: isUser ? req.user._id : req.mentor._id,
-        senderName: isUser ? req.user.username : req.mentor.username,
-        text: text.trim()
-    });
+    let uploadedImage;
+    if (req.file) {
+        const extensionByMimeType = {
+            'image/jpeg': 'jpg',
+            'image/png': 'png',
+            'image/gif': 'gif',
+            'image/webp': 'webp',
+            'image/bmp': 'bmp'
+        };
+        try {
+            uploadedImage = await uploadFile(
+                req.file.buffer,
+                `chat-image-${randomUUID()}.${extensionByMimeType[req.file.mimetype]}`,
+                req.file.mimetype
+            );
+        } catch (error) {
+            console.error('Failed to upload chat image:', error);
+            return res.status(503).json({
+                message: 'Unable to upload image. Check ImageKit configuration and try again.'
+            });
+        }
+    }
+
+    let message;
+    try {
+        message = await ChatMessage.create({
+            appointment: appointment._id,
+            senderType: isUser ? 'user' : 'mentor',
+            senderId: isUser ? req.user._id : req.mentor._id,
+            senderName: isUser ? req.user.username : req.mentor.username,
+            text: trimmedText,
+            imageUrl: uploadedImage?.url || ''
+        });
+    } catch (error) {
+        if (uploadedImage) {
+            try {
+                await deleteFile(uploadedImage.fileId);
+            } catch (cleanupError) {
+                console.error('Failed to clean up chat image after message creation failed:', cleanupError);
+            }
+        }
+        throw error;
+    }
+
     return res.status(201).json({ message });
 }
 

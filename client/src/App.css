@@ -1040,8 +1040,36 @@ html::-webkit-scrollbar {
   @apply mt-2 whitespace-pre-wrap break-words text-sm;
 }
 
+.chat-message-image-link {
+  @apply mt-2 block overflow-hidden rounded-lg border border-line;
+}
+
+.chat-message-image {
+  @apply block max-h-80 max-w-full object-contain;
+}
+
 .chat-compose-form {
   @apply mt-4 flex items-end gap-3;
+}
+
+.chat-image-button {
+  @apply grid size-11 shrink-0 place-items-center rounded-md border border-line bg-paper text-muted transition hover:border-accent hover:text-accent disabled:cursor-not-allowed disabled:opacity-50;
+}
+
+.chat-image-preview {
+  @apply mt-4 flex items-center gap-3 rounded-lg border border-line bg-paper p-2 text-xs text-muted;
+}
+
+.chat-image-preview img {
+  @apply size-12 rounded-md object-cover;
+}
+
+.chat-image-preview span {
+  @apply min-w-0 flex-1 truncate;
+}
+
+.chat-image-preview button {
+  @apply grid size-8 shrink-0 place-items-center rounded-md border border-line text-muted transition hover:border-accent hover:text-accent disabled:opacity-50;
 }
 
 .chat-compose-form textarea {
@@ -1217,8 +1245,8 @@ body {
 main.min-h-screen.bg-paper {
   background-color: transparent;
   background-image:
-    linear-gradient(rgb(95 145 210 / 3%) 1px, transparent 1px),
-    linear-gradient(90deg, rgb(95 145 210 / 3%) 1px, transparent 1px);
+    linear-gradient(rgb(90 145 220 / 2%) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(90 145 220 / 2%) 1px, transparent 1px);
   background-size: 42px 42px;
 }
 
@@ -1332,10 +1360,10 @@ main.min-h-screen.bg-paper {
 
 .auth-form-panel {
   padding: clamp(22px, 3vw, 36px);
-  border: 1px solid rgb(112 148 196 / 19%);
+  border: 1px solid rgb(91 128 184 / 17%);
   border-radius: 20px;
-  background: linear-gradient(145deg, rgb(17 29 49 / 92%), rgb(10 17 31 / 94%));
-  box-shadow: 0 24px 80px rgb(0 0 0 / 25%), inset 0 1px rgb(255 255 255 / 3%);
+  background: linear-gradient(145deg, rgb(9 17 32 / 97%), rgb(5 10 20 / 98%));
+  box-shadow: 0 24px 80px rgb(0 0 0 / 38%), inset 0 1px rgb(130 180 255 / 4%), 0 0 36px rgb(0 102 255 / 5%);
 }
 
 .form-heading h2,
@@ -1382,8 +1410,8 @@ main.min-h-screen.bg-paper {
 .profile-input,
 .chat-compose-form textarea {
   color: #e8f1ff;
-  border-color: rgb(115 148 190 / 24%);
-  background-color: #0a1425;
+  border-color: rgb(91 128 184 / 20%);
+  background-color: #060c17;
 }
 
 .input-wrap:focus-within,
@@ -1392,7 +1420,7 @@ main.min-h-screen.bg-paper {
 .profile-input:focus,
 .chat-compose-form textarea:focus {
   border-color: #55e6ff;
-  background-color: #0b172a;
+  background-color: #081323;
   box-shadow: 0 0 0 3px rgb(85 230 255 / 9%);
 }
 
@@ -1404,12 +1432,12 @@ main.min-h-screen.bg-paper {
 }
 
 .file-input-wrap {
-  background-color: #0b1527;
+  background-color: #070e1b;
 }
 
 .file-input-wrap:hover {
   border-color: #55e6ff;
-  background-color: #0d1a2e;
+  background-color: #0a1527;
 }
 
 .file-input-icon,
@@ -1464,8 +1492,8 @@ main.min-h-screen.bg-paper {
 
 .auth-feedback {
   color: #d7e4f7;
-  border-color: rgb(108 142 184 / 23%);
-  background: #101d31;
+  border-color: rgb(91 128 184 / 18%);
+  background: #09111f;
 }
 
 .auth-feedback--error {
@@ -1506,10 +1534,10 @@ main.min-h-screen.bg-paper {
 .video-call-card,
 .profile-card {
   color: #e8f1ff;
-  border-color: rgb(112 148 196 / 19%);
+  border-color: rgb(91 128 184 / 17%);
   border-radius: 18px;
-  background: linear-gradient(145deg, rgb(17 29 49 / 94%), rgb(10 17 31 / 96%));
-  box-shadow: 0 18px 55px rgb(0 0 0 / 20%), inset 0 1px rgb(255 255 255 / 3%);
+  background: linear-gradient(145deg, rgb(8 16 30 / 98%), rgb(5 10 19 / 99%));
+  box-shadow: 0 18px 55px rgb(0 0 0 / 35%), inset 0 1px rgb(130 180 255 / 4%), 0 0 30px rgb(0 102 255 / 4%);
 }
 
 .account-card > p,
@@ -1541,7 +1569,7 @@ main.min-h-screen.bg-paper {
 .profile-avatar {
   color: #55e6ff;
   border-color: rgb(85 230 255 / 25%);
-  background: #0b1729;
+  background: #070e1b;
 }
 
 .appointment-status {
@@ -1587,17 +1615,17 @@ main.min-h-screen.bg-paper {
 .chat-message-list {
   color: #e8f1ff;
   border-color: rgb(112 148 196 / 20%);
-  background: #08111f;
+  background: #050a14;
 }
 
 .chat-message {
   color: #e8f1ff;
-  background: #142239;
+  background: #0c1728;
   box-shadow: none;
 }
 
 .chat-message--own {
-  background: #123143;
+  background: #0a2533;
 }
 
 .chat-message-meta time {
@@ -1606,8 +1634,8 @@ main.min-h-screen.bg-paper {
 
 .wallet-topup-note {
   color: #a0aec4;
-  border-color: rgb(108 142 184 / 19%);
-  background: #0b1527;
+  border-color: rgb(91 128 184 / 17%);
+  background: #070e1b;
 }
 
 .profile-input-label,
@@ -1674,9 +1702,9 @@ main.min-h-screen.bg-paper header {
 main.min-h-screen.bg-paper button[aria-pressed],
 main.min-h-screen.bg-paper a.inline-flex,
 main.min-h-screen.bg-paper button[aria-label="Refresh applications"] {
-  border-color: rgb(108 142 184 / 22%);
+  border-color: rgb(91 128 184 / 18%);
   color: #dce8f8;
-  background-color: #101b2e;
+  background-color: #080f1c;
 }
 
 main.min-h-screen.bg-paper button[aria-pressed="true"],
@@ -1685,7 +1713,7 @@ main.min-h-screen.bg-paper a.inline-flex:hover,
 main.min-h-screen.bg-paper button[aria-label="Refresh applications"]:hover {
   border-color: rgb(85 230 255 / 45%);
   color: #55e6ff;
-  background-color: #12243a;
+  background-color: #0b1c30;
 }
 
 main.min-h-screen.bg-paper .text-green-800 {

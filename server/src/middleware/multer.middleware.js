@@ -56,3 +56,7 @@ export function uploadMentorDocuments(req, res, next) {
 export function uploadUserProfilePicture(req, res, next) {
     return handleUpload(upload.single('profilePicture'), req, res, next);
 }
+
+export function uploadChatImage(req, res, next) {
+    return handleUpload(upload.single('image'), req, res, next);
+}

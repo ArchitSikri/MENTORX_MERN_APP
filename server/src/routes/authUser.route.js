@@ -16,7 +16,7 @@ import {
     verifyEmail
 } from '../controllers/authUser.controller.js';
 import { authUser } from '../middleware/authMiddleware.js';
-import { uploadUserProfilePicture } from '../middleware/multer.middleware.js';
+import { uploadChatImage, uploadUserProfilePicture } from '../middleware/multer.middleware.js';
 import {
     listAppointmentMessages,
     createAppointment,
@@ -41,7 +41,7 @@ authRouter.get('/appointments', authUser, listUserAppointments);
 authRouter.post('/appointments', authUser, createAppointment);
 authRouter.post('/appointments/:appointmentId/pay', authUser, payForAppointment);
 authRouter.get('/appointments/:appointmentId/messages', authUser, listAppointmentMessages);
-authRouter.post('/appointments/:appointmentId/messages', authUser, sendAppointmentMessage);
+authRouter.post('/appointments/:appointmentId/messages', authUser, uploadChatImage, sendAppointmentMessage);
 authRouter.get('/appointments/:appointmentId/call', authUser, getAppointmentVideoCall);
 authRouter.patch('/appointments/:appointmentId/call/:callId', authUser, respondToAppointmentVideoCall);
 authRouter.post('/appointments/:appointmentId/call/:callId/token', authUser, createAppointmentVideoCallToken);
