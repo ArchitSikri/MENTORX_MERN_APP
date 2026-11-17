@@ -22,6 +22,11 @@ A full-stack mentorship platform for builders, learners, and engineers, built wi
 - Lucide React
 - React Remix Icons
 - GSAP
+- zegocloud
+- google auth
+- payment gateway
+- node mailer
+- OTP verification
 
 **Backend**
 - Node.js
@@ -29,6 +34,11 @@ A full-stack mentorship platform for builders, learners, and engineers, built wi
 - MongoDB
 - Mongoose
 - Socket.IO
+- zegocloud
+- google auth
+- payment gateway
+- node mailer
+- OTP verification
 
 **Authentication**
 - JWT
